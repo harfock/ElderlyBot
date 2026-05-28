@@ -1,11 +1,92 @@
-<div align="center">
+# 👵 長輩關懷溫馨提醒板 (Elderly Care Smart Reminders Board) 👴
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+一個專門為長輩設計的**超大字體、高對比、雙語音（廣東話 / 國語）**每日溫馨生活提醒與健康運動輔助面版。
 
-  <h1>Built with AI Studio</h2>
+本工具將複雜的操作介面簡化，去除繁瑣設定，並貼心結合網頁自帶的 **文字轉語音 (Speech Synthesis)** 語音播報功能，讓視力不佳、手腳不便或不熟悉電腦的長輩，也能在一次輕觸下聽見親切溫暖的溫馨叮嚀。
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+---
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+## 🎨 核心設計特色 (Design Features)
 
-</div>
+### 1. 溫馨暖色調與超高對比 (Warm & High Contrast Visuals)
+* 採用暖調奶油色背景 (`#FFF8E1`) 配合深橘紅色 (`#D84315`) 與黑灰色大字。這不僅帶來家庭溫馨感，更有利於緩解高齡、弱視者的閱讀和辨色疲勞。
+* 具備緊湊精緻又圓潤厚實的粗體描邊卡片風（Neobrutalism style），交互反饋清晰強烈。
+
+### 2. 極致無阻礙讀寫 (Elder-Friendly UI/UX)
+* **超大字號**：主版面和核心展示文字皆由 24px（大字）至 48px（巨大字）起步。
+* **防誤觸大按鈕**：所有點擊交互（卡片、導航標籤、彈出視窗開關）均採用寬鬆的間距和超大點擊區域，防止長輩手抖誤選。
+* **無繁瑣機制**：無任何廣告、深層選單及彈跳干擾。
+
+### 3. 多元語音朗讀支援 (Speech Synthesis Accessibility)
+* 內建語音朗讀系統：
+  * **廣東話 (粵語 - zh-HK)** 🇭🇰 (預設發音，更親切合拍)
+  * **國語 (普通話 - zh-TW)** 🇹🇼
+* **可調語速**：支持「更慢🐢」、「適中🚶」、「稍快⚡」三檔變速，確保聽力退化的長輩聽得清、聽得懂。
+
+### 4. 精確智能時間段分劃 (Smart Time Segments)
+系統完美解決本地及時區測試偏差，即時獲取長輩當前所在地的實際時間，並每 6 小時對時段進行生動劃分，給予最貼切常態的溫馨問候：
+* `00:01 - 03:00`：**深夜** 🌌
+* `03:01 - 05:59`：**凌晨** 🕯️ (含緩衝區間)
+* `06:00 - 07:00`：**清晨** 🌄
+* `07:01 - 11:59`：**上午** ☀️
+* `12:00 - 18:00`：**下午** 🧉
+* `18:01 - 20:00`：**傍晚** 🌆
+* `20:01 - 00:00`：**夜晚** 🌙
+
+---
+
+## 🏋️ 關懷場景與功能 (Care Scenarios)
+
+### 1. 🏋️ 運動時刻 (Wellness Activities)
+鍛鍊長輩的骨骼肌肉防跌倒：
+- **項目**：頭部運動、伸展手臂、腰部轉動、活動雙腿、背部放鬆、手指操。
+- **作用**：均帶有緩慢執行的步調引導（特別是增強末梢循環的手指操）。
+
+### 2. 🍚 用餐提醒 (Nutritional Dining Guidance)
+保護吞嚥安全，吃得營養又安心：
+- **項目**：準備吃飯啦（飯前洗手）、味道合口嗎、小心慢慢吃（防燙防嗆）、多吃蔬菜（順暢腸道）、細嚼慢嚥（15-20下消化好）、吃飽了沒呀。
+
+### 3. 💊 吃藥與健康 (Daily Health Guards)
+規律照護、掌握血壓變化：
+- **項目**：該吃藥了（對照藥袋大口配溫水）、喝杯溫水（少量多次抗乾燥）、量量血壓（安靜5分鐘）、深呼吸（4秒吸6秒呼情緒沉澱）、早點休息、按時睡覺。
+
+---
+
+## 🛠️ 開發技術棧與亮點 (Tech Stack & Implementation)
+
+* **核心框架**：React 19 + TypeScript
+* **打工構建器**：Vite 6 (AI Studio 開發配置)
+* **視覺動畫**：`motion` (Motion for React) 帶來溫和有禮的微交互效果
+* **樣式工具**：Tailwind CSS 的最新 `@tailwindcss/vite` V4 極簡編譯
+* **圖標庫**：`lucide-react`
+* **時區相容**：智慧偏移校正，保證在任何雲端容器/瀏覽器沙盒運作時，皆能獲取到最準確的長輩本地時區時段。
+
+---
+
+## 🚀 本地開發與運行 (Local Development)
+
+若要在您的本機運行此項目：
+
+1. **安裝依賴（Install dependencies）**
+   ```bash
+   npm install
+   ```
+
+2. **啟動開發伺服器（Start dev server）**
+   ```bash
+   npm run dev
+   ```
+
+3. **項目構建（Build for production）**
+   ```bash
+   npm run build
+   ```
+
+4. **代碼檢查（Type checking & linting）**
+   ```bash
+   npm run lint
+   ```
+
+---
+
+*以愛之名，貼心守護，祝願所有長輩健康、快樂、平安！* 💖
