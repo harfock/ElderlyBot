@@ -1,5 +1,5 @@
 {
-  "name": "長輩關懷溫馨提醒板",
+  "name": "長者日常語音提示程式",
   "description": "專為長輩設計的溫馨大字版提醒與運動小助手，具備高對比暖色調與語音播報功能（Traditional Chinese / Big5 顯示）。",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
