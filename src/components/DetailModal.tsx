@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Volume2, X, Play, Square } from "lucide-react";
-import { InstructionItem } from "../types";
+import { InstructionItem, getBestVoice } from "../types";
 
 interface DetailModalProps {
   item: InstructionItem;
@@ -16,6 +16,11 @@ export default function DetailModal({ item, isOpen, onClose, voiceLang = "zh-HK"
   const [speechSpeed, setSpeechSpeed] = useState<number>(0.8); // Slightly slower for better elder clarity
   const synthRef = useRef<SpeechSynthesis | null>(null);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  const isHK = voiceLang === "zh-HK";
+  const title = isHK ? (item.titleCantonese || item.title) : item.title;
+  const fullTip = isHK ? (item.fullTipCantonese || item.fullTip) : item.fullTip;
+  const voiceText = isHK ? (item.voiceTextCantonese || item.voiceText) : item.voiceText;
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.speechSynthesis) {
@@ -48,7 +53,7 @@ export default function DetailModal({ item, isOpen, onClose, voiceLang = "zh-HK"
 
     synthRef.current.cancel();
 
-    const textToSpeak = item.voiceText || item.fullTip;
+    const textToSpeak = voiceText || fullTip;
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
     utteranceRef.current = utterance;
 
@@ -72,16 +77,9 @@ export default function DetailModal({ item, isOpen, onClose, voiceLang = "zh-HK"
 
     // Try to find a friendly native Cantonese or Mandarin voice
     const voices = synthRef.current.getVoices();
-    const targetVoice = voices.find(
-      (v) => v.lang.toLowerCase().includes(voiceLang.toLowerCase())
-    );
-    const fallbackVoice = voices.find(
-      (v) => v.lang.toLowerCase().includes("zh")
-    );
-    if (targetVoice) {
-      utterance.voice = targetVoice;
-    } else if (fallbackVoice) {
-      utterance.voice = fallbackVoice;
+    const bestVoice = getBestVoice(voices, voiceLang);
+    if (bestVoice) {
+      utterance.voice = bestVoice;
     }
 
     synthRef.current.speak(utterance);
@@ -104,6 +102,28 @@ export default function DetailModal({ item, isOpen, onClose, voiceLang = "zh-HK"
         return "text-4xl sm:text-5xl leading-loose font-extrabold";
     }
   };
+
+  // Localized texts
+  const closeBtnText = isHK ? "關閉" : "關閉";
+  const readHeader = isHK ? "🔊 廣東話貼心朗讀" : "🔊 貼心語音朗讀";
+  const readSubtext = isHK 
+    ? "睇得吃力？點擊右邊橙色極大按鈕，等我讀畀你聽！" 
+    : "看得吃力嗎？點擊右側橘紅色巨大按鈕，即可播放語音聽一聽！";
+  const speedLabel = isHK ? "慢啲定快啲：" : "選擇語速：";
+  const speedSlantMin = isHK ? "慢啲 🐢" : "更慢 🐢";
+  const speedSlantMid = isHK ? "正常 🚶" : "適中 🚶";
+  const speedSlantMax = isHK ? "快啲 ⚡" : "稍快 ⚡";
+  const speakBtnPlay = isHK ? "聽語音" : "語音朗讀";
+  const speakBtnStop = isHK ? "停止讀" : "停止朗讀";
+  const soundWaveText = isHK ? "正在為你語音播報：" : "正在為您語音播報：";
+  const fontSizeLabel = isHK ? "字體大細調整：" : "字體放大調整：";
+  const fontSizeLg = isHK ? "大 🅰️" : "大 🅰️";
+  const fontSizeXl = isHK ? "更大 🆎" : "更大 🆎";
+  const fontSizeXxl = isHK ? "巨大 🏆" : "巨大 🏆";
+  const footerHint = isHK
+    ? "💡 提示：運動嗰陣請坐喺穩陣椅子上進行，安全首要。量血壓及食藥前，可以先飲兩啖暖水休息下。"
+    : "💡 提醒：運動時請在穩固椅子上進行，並請安全第一。量血壓及吃藥前，可以先喝幾口溫水休息一下喔。";
+  const footerCloseBtn = isHK ? "我知啦，關閉指示" : "我了解了，關閉此視窗";
 
   return (
     <AnimatePresence>
@@ -131,11 +151,11 @@ export default function DetailModal({ item, isOpen, onClose, voiceLang = "zh-HK"
             {/* Header */}
             <div className="flex flex-wrap items-center justify-between gap-4 p-6 sm:p-8 border-b-[6px] border-dashed border-[#D84315] bg-[#FFF3E0]">
               <div className="flex items-center gap-4">
-                <span className="text-5xl select-none" role="img" aria-label={item.emoji}>
+                <span className="text-5xl select-none" role="img" aria-label={title}>
                   {item.emoji}
                 </span>
                 <h2 className="text-3xl sm:text-5xl font-black text-[#D84315] tracking-tight">
-                  {item.title}
+                  {title}
                 </h2>
               </div>
               <button
@@ -144,7 +164,7 @@ export default function DetailModal({ item, isOpen, onClose, voiceLang = "zh-HK"
                 className="flex items-center gap-2 px-6 py-3 bg-[#D84315] hover:bg-[#BF360C] text-white font-extrabold text-xl sm:text-2xl rounded-2xl border-[4px] border-[#1E1E1E] shadow-[5px_5px_0_#1E1E1E] active:translate-y-1 transition-all cursor-pointer"
               >
                 <X className="w-8 h-8 stroke-[3]" />
-                關閉
+                {closeBtnText}
               </button>
             </div>
 
@@ -156,22 +176,22 @@ export default function DetailModal({ item, isOpen, onClose, voiceLang = "zh-HK"
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                   <div className="flex flex-col items-center md:items-start text-center md:text-left">
                     <span className="text-2xl sm:text-3xl font-black text-[#D84315] flex items-center gap-2">
-                      🔊 貼心語音朗讀
+                      {readHeader}
                     </span>
                     <span className="text-lg sm:text-xl text-[#5D4037] font-bold mt-2">
-                      看得吃力嗎？點擊右側橘紅色巨大按鈕，即可播放語音聽一聽！
+                      {readSubtext}
                     </span>
                   </div>
 
                   <div className="flex flex-wrap justify-center items-center gap-4">
                     {/* Speed Selector */}
                     <div className="flex flex-col items-center gap-1 px-3 py-2 bg-white rounded-2xl border-2 border-gray-300">
-                      <span className="text-xs sm:text-sm font-extrabold text-gray-700">選擇語速：</span>
+                      <span className="text-xs sm:text-sm font-extrabold text-gray-700">{speedLabel}</span>
                       <div className="flex gap-1.5">
                         {[
-                          { val: 0.6, label: "更慢 🐢" },
-                          { val: 0.8, label: "適中 🚶" },
-                          { val: 1.1, label: "稍快 ⚡" }
+                          { val: 0.6, label: speedSlantMin },
+                          { val: 0.8, label: speedSlantMid },
+                          { val: 1.1, label: speedSlantMax }
                         ].map((speed) => (
                           <button
                             key={speed.val}
@@ -181,17 +201,14 @@ export default function DetailModal({ item, isOpen, onClose, voiceLang = "zh-HK"
                               if (isPlaying) {
                                 stopSpeaking();
                                 setTimeout(() => {
-                                  const textToSpeak = item.voiceText || item.fullTip;
+                                  const textToSpeak = voiceText || fullTip;
                                   const utterance = new SpeechSynthesisUtterance(textToSpeak);
                                   utterance.lang = voiceLang;
                                   utterance.rate = speed.val;
                                   const voices = window.speechSynthesis.getVoices();
-                                  const targetVoice = voices.find((v) => v.lang.toLowerCase().includes(voiceLang.toLowerCase()));
-                                  const fallbackVoice = voices.find((v) => v.lang.toLowerCase().includes("zh"));
-                                  if (targetVoice) {
-                                    utterance.voice = targetVoice;
-                                  } else if (fallbackVoice) {
-                                    utterance.voice = fallbackVoice;
+                                  const bestVoice = getBestVoice(voices, voiceLang);
+                                  if (bestVoice) {
+                                    utterance.voice = bestVoice;
                                   }
                                   utterance.onstart = () => setIsPlaying(true);
                                   utterance.onend = () => setIsPlaying(false);
@@ -225,12 +242,12 @@ export default function DetailModal({ item, isOpen, onClose, voiceLang = "zh-HK"
                       {isPlaying ? (
                         <>
                           <Square className="w-6 h-6 fill-current stroke-[3]" />
-                          停止朗讀
+                          {speakBtnStop}
                         </>
                       ) : (
                         <>
                           <Volume2 className="w-8 h-8 animate-bounce stroke-[3]" />
-                          語音朗讀
+                          {speakBtnPlay}
                         </>
                       )}
                     </button>
@@ -240,7 +257,7 @@ export default function DetailModal({ item, isOpen, onClose, voiceLang = "zh-HK"
                 {/* Nice visual sound waves when playing */}
                 {isPlaying && (
                   <div className="flex justify-center items-center gap-1.5 mt-4">
-                    <span className="text-base font-bold text-[#D84315] mr-2">正在為您語音播報：</span>
+                    <span className="text-base font-bold text-[#D84315] mr-2">{soundWaveText}</span>
                     {[...Array(6)].map((_, i) => (
                       <motion.div
                         key={i}
@@ -264,13 +281,13 @@ export default function DetailModal({ item, isOpen, onClose, voiceLang = "zh-HK"
               {/* Text Size Controls for High Visibility */}
               <div className="w-full flex items-center justify-between mb-5 p-4 bg-white/70 border-2 border-gray-300 rounded-2xl">
                 <span className="text-lg sm:text-xl font-black text-gray-700 flex items-center gap-1.5">
-                  🔎 字體放大調整：
+                  🔎 {fontSizeLabel}
                 </span>
                 <div className="flex gap-2">
                   {[
-                    { type: "large", label: "大 🅰️" },
-                    { type: "larger", label: "更大 🆎" },
-                    { type: "giant", label: "巨大 🏆" },
+                    { type: "large", label: fontSizeLg },
+                    { type: "larger", label: fontSizeXl },
+                    { type: "giant", label: fontSizeXxl },
                   ].map((sz) => (
                     <button
                       key={sz.type}
@@ -291,13 +308,13 @@ export default function DetailModal({ item, isOpen, onClose, voiceLang = "zh-HK"
               {/* Central Instructional Rich Box */}
               <div className="w-full bg-white border-[6px] border-[#D84315] rounded-[36px] p-8 sm:p-10 shadow-[8px_8px_0_rgba(216,67,21,0.06)] min-h-[160px]">
                 <p className={`${getFontSizeClass()} text-[#1E1E1E] whitespace-pre-line text-justify`}>
-                  {item.fullTip}
+                  {fullTip}
                 </p>
               </div>
 
               {/* Gentle Helper Banner */}
               <div className="mt-6 text-center text-gray-500 font-bold text-base sm:text-lg max-w-xl">
-                💡 提醒：運動時請在穩固椅子上進行，並請安全第一。量血壓及吃藥前，可以先喝幾口溫水休息一下喔。
+                {footerHint}
               </div>
 
             </div>
@@ -309,7 +326,7 @@ export default function DetailModal({ item, isOpen, onClose, voiceLang = "zh-HK"
                 onClick={onClose}
                 className="w-full sm:w-2/3 py-4 sm:py-5 bg-[#D84315] hover:bg-[#BF360C] text-white font-extrabold text-2xl sm:text-3xl rounded-3xl border-4 border-[#1E1E1E] shadow-[5px_5px_0_#1E1E1E] active:translate-y-1 transition-all cursor-pointer flex justify-center items-center gap-2 select-none"
               >
-                我了解了，關閉此視窗
+                {footerCloseBtn}
               </button>
             </div>
           </motion.div>

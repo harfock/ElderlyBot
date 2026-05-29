@@ -4,10 +4,15 @@ import { InstructionItem } from "../types";
 interface InstructionCardProps {
   key?: string;
   item: InstructionItem;
+  voiceLang?: "zh-HK" | "zh-TW";
   onClick: () => void;
 }
 
-export default function InstructionCard({ item, onClick }: InstructionCardProps) {
+export default function InstructionCard({ item, voiceLang = "zh-HK", onClick }: InstructionCardProps) {
+  const title = voiceLang === "zh-HK" ? (item.titleCantonese || item.title) : item.title;
+  const shortText = voiceLang === "zh-HK" ? (item.shortTextCantonese || item.shortText) : item.shortText;
+  const ctaText = voiceLang === "zh-HK" ? "睇詳細指示 📣 ➔" : "看詳細說明 📣 ➔";
+
   return (
     <motion.button
       id={`card-btn-${item.id}`}
@@ -21,18 +26,18 @@ export default function InstructionCard({ item, onClick }: InstructionCardProps)
         <span 
           className="text-5xl sm:text-6xl p-3 bg-[#FFF8E1] rounded-[24px] flex items-center justify-center select-none shrink-0 border-3 border-dashed border-[#D84315]/40" 
           role="img" 
-          aria-label={item.title}
+          aria-label={title}
         >
           {item.emoji}
         </span>
         
         {/* Text Area */}
         <div className="flex-1 min-w-0">
-          <h3 className="text-2xl sm:text-3xl font-black text-[#D84315] tracking-tight truncate">
-            {item.title}
+          <h3 className="text-2xl sm:text-3xl font-black text-[#D84315] tracking-tight truncate border-b-2 border-dashed border-orange-100 pb-1">
+            {title}
           </h3>
           <p className="text-lg sm:text-xl font-bold mt-1.5 text-[#5D4037] line-clamp-2 leading-relaxed">
-            {item.shortText}
+            {shortText}
           </p>
         </div>
       </div>
@@ -40,7 +45,7 @@ export default function InstructionCard({ item, onClick }: InstructionCardProps)
       {/* Decorative Arrow Tag */}
       <div className="w-full flex justify-end items-center mt-4 pt-3 border-t-3 border-dashed border-[#FFF8E1]">
         <span className="text-base sm:text-lg font-black text-[#D84315] bg-[#FFF8E1] py-1.5 px-4 rounded-full border-2 border-[#D84315]/30 flex items-center gap-1 hover:bg-[#FFF3E0]">
-          看詳細說明 📣 ➔
+          {ctaText}
         </span>
       </div>
     </motion.button>
