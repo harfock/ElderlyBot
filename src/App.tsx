@@ -10,17 +10,26 @@ import {
   Calendar,
   AlertCircle
 } from "lucide-react";
-import { INSTRUCTION_CATEGORIES, InstructionItem, CategoryGroup } from "./types";
+import { INSTRUCTION_CATEGORIES, InstructionItem, CategoryGroup, getBestVoice } from "./types";
 import InstructionCard from "./components/InstructionCard";
 import DetailModal from "./components/DetailModal";
 
-const WELLNESS_TIPS = [
+const WELLNESS_TIPS_MANDARIN = [
   "多喝溫水能讓喉嚨更舒服，還能促進身體排毒喔！",
   "起步前可以先踩穩地板，慢慢站起來，防跌小祕訣！",
   "每次用餐細嚼慢嚥，不僅能嚐出食物美味，腸胃也更好吸收！",
   "每天做做十指握拳操，能保持手指靈活，活動腦部筋骨！",
   "高於心臟的伸展配合深呼吸，能讓心情像曬太陽一樣暖烘烘！",
   "血壓計記得放在桌面上，每天早晚定時測量，是愛護自己最好的方式！"
+];
+
+const WELLNESS_TIPS_CANTONESE = [
+  "多飲暖水能等喉嚨更舒暢，仲能促進人體排毒排汗㗎！",
+  "落床前可以先踩穩地板，慢慢企起身，預防跌倒小秘笈！",
+  "餐餐食飯都慢慢咬慢慢吞，不但能食出味道鮮美，腸胃仲容易吸收！",
+  "每日郁下手指開合拳頭，能令手指關節靈活，仲能鍛鍊大腦！",
+  "雙手舉高過膊頭伸展並配合深呼吸，心情會像曬太陽咁暖洋洋！",
+  "血壓計記得放喺枱面，每日早晚定時量血壓，係錫自己最好嘅方式！"
 ];
 
 export default function App() {
@@ -30,6 +39,8 @@ export default function App() {
   const [isWelcomeSpeaking, setIsWelcomeSpeaking] = useState(false);
   const [tipIndex, setTipIndex] = useState(0);
   const [voiceLang, setVoiceLang] = useState<"zh-HK" | "zh-TW">("zh-HK"); // Default to Cantonese (廣東話)
+
+  const isHK = voiceLang === "zh-HK";
 
   // 智能獲取跟隨長輩所在時區的實際時間
   const localTime = (() => {
@@ -52,7 +63,7 @@ export default function App() {
   // Cycle wellness tips every 20 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      setTipIndex((prev) => (prev + 1) % WELLNESS_TIPS.length);
+      setTipIndex((prev) => (prev + 1) % WELLNESS_TIPS_MANDARIN.length);
     }, 20000);
     return () => clearInterval(interval);
   }, []);
@@ -65,7 +76,7 @@ export default function App() {
       day: "numeric",
       weekday: "long",
     };
-    return localTime.toLocaleDateString("zh-TW", options);
+    return localTime.toLocaleDateString(isHK ? "zh-HK" : "zh-TW", options);
   };
 
   const formatChineseTime = () => {
@@ -74,21 +85,21 @@ export default function App() {
     const sec = localTime.getSeconds();
     const totalMins = hour * 60 + min;
 
-    let period = "夜晚";
+    let period = isHK ? "夜晚" : "夜晚";
     if (totalMins >= 1 && totalMins <= 180) {
-      period = "深夜";
+      period = isHK ? "深夜" : "深夜";
     } else if (totalMins > 180 && totalMins < 360) {
-      period = "凌晨";
+      period = isHK ? "凌晨" : "凌晨";
     } else if (totalMins >= 360 && totalMins <= 420) {
-      period = "清晨";
+      period = isHK ? "清晨" : "清晨";
     } else if (totalMins > 420 && totalMins < 720) {
-      period = "上午";
+      period = isHK ? "上午" : "上午";
     } else if (totalMins >= 720 && totalMins <= 1080) {
-      period = "下午";
+      period = isHK ? "下午" : "下午";
     } else if (totalMins > 1080 && totalMins <= 1200) {
-      period = "傍晚";
+      period = isHK ? "傍晚" : "傍晚";
     } else {
-      period = "夜晚";
+      period = isHK ? "夜晚" : "夜晚";
     }
 
     let displayHour = hour % 12;
@@ -109,31 +120,45 @@ export default function App() {
 
     // 00:01 - 03:00 (1 到 180 分鐘)
     if (totalMins >= 1 && totalMins <= 180) {
-      return "🌌 親愛的長輩，現在是【深夜】時分。夜深了，四周安寧。如您還沒入睡，請小心起步，早點休息，小心著涼。";
+      return isHK 
+        ? "🌌 親愛嘅長輩，依家係【深夜】時分。夜深人靜，如果你仲未瞓，起步要做足安全，早啲休息，小心受涼。"
+        : "🌌 親愛的長輩，現在是【深夜】時分。夜深了，四周安寧。如您還沒入睡，請小心起步，早點休息，小心著涼。";
     } 
     // 03:01 - 05:59 (181 到 359 分鐘，填補用戶 181 到凌晨六點之間的區間)
     else if (totalMins > 180 && totalMins < 360) {
-      return "🕯️ 親愛的長輩，現在是【凌晨】時分。此時是深度安睡與養護的最佳時刻，祝您睡得香甜，擁有安穩的美夢。";
+      return isHK
+        ? "🕯️ 親愛嘅長輩，依家係【凌晨】時分。呢個時候係深度睡眠同養生嘅最好時間，祝你睏個安穩好夢。"
+        : "🕯️ 親愛的長輩，現在是【凌晨】時分。此時是深度安睡與養護的最佳時刻，祝您睡得香甜，擁有安穩的美夢。";
     } 
     // 06:00 - 07:00 (360 到 420 分鐘)
     else if (totalMins >= 360 && totalMins <= 420) {
-      return "🌄 親愛的長輩，現在是【清晨】時分。清晨好！請在床邊靜坐一分鐘再站起，喝杯溫水潤喉，放鬆身心。";
+      return isHK
+        ? "🌄 親愛嘅長輩，依家係【清晨】時分。早晨好！落床前請先喺床邊坐多一分鐘先企身，飲杯暖水溫潤喉嚨。"
+        : "🌄 親愛的長輩，現在是【清晨】時分。清晨好！請在床邊靜坐一分鐘再站起，喝杯溫水潤喉，放鬆身心。";
     } 
     // 07:01 - 11:59 (421 到 719 分鐘)
     else if (totalMins > 420 && totalMins < 720) {
-      return "☀️ 親愛的長輩，現在是【上午】時分。上午好！太陽暖洋洋的，活動活動筋骨，伸展伸展雙手。";
+      return isHK
+        ? "☀️ 親愛嘅長輩，依家係【上午】時分。朝早好！今日太陽暖烘烘，一齊活動下關節、鬆下筋骨、伸展下雙手。"
+        : "☀️ 親愛的長輩，現在是【上午】時分。上午好！太陽暖洋洋的，活動活動筋骨，伸展伸展雙手。";
     } 
     // 12:00 - 18:00 (720 到 1080 分鐘)
     else if (totalMins >= 720 && totalMins <= 1080) {
-      return "🧉 親愛的長輩，現在是【下午】時分。下午好！放鬆的餐後舒暢時光。喝杯溫茶，放鬆背腿，人更精神。";
+      return isHK
+        ? "🧉 親愛嘅長輩，依家係【下午】時分。下午好！放鬆餐後嘅舒暖時光。飮杯暖茶，放鬆背脊同大腿，人更醒神。"
+        : "🧉 親愛的長輩，現在是【下午】時分。下午好！放鬆的餐後舒暢時光。喝杯溫茶，放鬆背腿，人更精神。";
     } 
     // 18:01 - 20:00 (1081 到 1200 分鐘)
     else if (totalMins > 1080 && totalMins <= 1200) {
-      return "🌆 親愛的長輩，現在是【傍晚】時分。傍晚好！做做手指操，準備享用美味營養、軟爛易嚼的晚餐囉。";
+      return isHK
+        ? "🌆 親愛嘅長輩，依家係【傍晚】時分。傍晚好！一齊做下手指操，準備享用軟腍、好咬又營養嘅晚餐囉。"
+        : "🌆 親愛的長輩，現在是【傍晚】時分。傍晚好！做做手指操，準備享用美味營養、軟爛易嚼的晚餐囉。";
     } 
     // 20:01 - 00:00 (1201 分鐘到 1440 也就是 24小時，包含 00:00)
     else {
-      return "🌙 親愛的長輩，現在是【夜晚】時分。夜晚好！辛苦了一天，記得定時服藥，熱水泡腳睡個舒服的好覺。";
+      return isHK
+        ? "🌙 親愛嘅長輩，依家係【夜晚】時分。夜色好！辛苦咗一日，記住準時食藥，用暖水浸下腳，睏個香甜好夢。"
+        : "🌙 親愛的長輩，現在是【夜晚】時分。夜晚好！辛苦了一天，記得定時服藥，熱水泡腳睡個舒服的好覺。";
     }
   };
 
@@ -152,7 +177,7 @@ export default function App() {
     // Generate text including general instruction
     const plainGreeting = getGreetingMessage().replace(/[^\u4e00-\u9fa5，！。？【】]/g, "");
     const extraInstructionsMessage = voiceLang === "zh-HK"
-      ? "。本程式已為您配備超大字體同貼心粵語。請點擊下面嘅任何一張卡片，就可以睇到詳細指示，仲會同您進行廣東話語音朗讀。"
+      ? "。依個程式已經為你配置好超大字形同親近粵語。請撳下面一塊卡片睇詳細步驟，等我為你廣東話語音朗讀。"
       : "。本程式已為您配置超大字體與貼心國語。請點擊下方的任何一項卡片，即可查看詳細指示並為您語音朗讀喔。";
     
     const utterance = new SpeechSynthesisUtterance(plainGreeting + extraInstructionsMessage);
@@ -165,12 +190,9 @@ export default function App() {
 
     // Try finding nice Voice
     const voices = window.speechSynthesis.getVoices();
-    const targetVoice = voices.find(v => v.lang.toLowerCase().includes(voiceLang.toLowerCase()));
-    const fallbackVoice = voices.find(v => v.lang.toLowerCase().includes("zh"));
-    if (targetVoice) {
-      utterance.voice = targetVoice;
-    } else if (fallbackVoice) {
-      utterance.voice = fallbackVoice;
+    const bestVoice = getBestVoice(voices, voiceLang);
+    if (bestVoice) {
+      utterance.voice = bestVoice;
     }
 
     window.speechSynthesis.speak(utterance);
@@ -179,6 +201,9 @@ export default function App() {
   const activeCategoryData = INSTRUCTION_CATEGORIES.find(
     (cat) => cat.id === selectedCategory
   ) || INSTRUCTION_CATEGORIES[0];
+
+  const activeCategoryName = isHK ? (activeCategoryData.nameCantonese || activeCategoryData.name) : activeCategoryData.name;
+  const activeCategoryDescription = isHK ? (activeCategoryData.descriptionCantonese || activeCategoryData.description) : activeCategoryData.description;
 
   const getCategoryIcon = (iconName: string) => {
     switch (iconName) {
@@ -193,6 +218,8 @@ export default function App() {
     }
   };
 
+  const currentTips = isHK ? WELLNESS_TIPS_CANTONESE : WELLNESS_TIPS_MANDARIN;
+
   return (
     <div className="min-h-screen bg-[#FFF8E1] text-[#1E1E1E] font-sans flex flex-col antialiased pb-12 selection:bg-[#FBE9E7] selection:text-[#D84315] select-text border-t-[20px] border-[#D84315]">
       
@@ -200,10 +227,10 @@ export default function App() {
       <div className="bg-[#D84315] text-white py-2.5 px-6 flex justify-between items-center text-sm sm:text-base font-black tracking-wider border-b-4 border-[#1E1E1E]">
         <div className="flex items-center gap-2">
           <Heart className="w-5 h-5 fill-current animate-pulse text-yellow-300" />
-          <span>孝心陪伴 ・ 溫馨守護板</span>
+          <span>{isHK ? "長輩守護 ・ 溫馨關懷提醒板" : "孝心陪伴 ・ 溫馨守護板"}</span>
         </div>
         <div>
-          <span>大字版 ✦ 高對比 ✦ 語音播報輔助</span>
+          <span>{isHK ? "超大字體 ✦ 高對比 ✦ 貼心廣東話及國語" : "大字版 ✦ 高對比 ✦ 語音播報輔助"}</span>
         </div>
       </div>
 
@@ -218,12 +245,12 @@ export default function App() {
             <div className="flex-1">
               <div className="flex items-center gap-4 flex-wrap">
                 <span className="bg-[#FFF3E0] text-[#D84315] px-5 py-2 rounded-2xl text-xl sm:text-2xl font-black border-2 border-[#D84315]/30 font-sans">
-                  💖 每日祝福
+                  {isHK ? "💖 每日貼心祝福" : "💖 每日祝福"}
                 </span>
                 
                 {/* Voice Selection Toolbar */}
                 <div className="flex items-center gap-2 bg-[#FFF8E1] p-1.5 rounded-2xl border-2 border-[#D84315]/20">
-                  <span className="text-sm sm:text-base font-black text-gray-700 ml-1">🗣️ 朗讀語言：</span>
+                  <span className="text-sm sm:text-base font-black text-gray-700 ml-1">{isHK ? "🗣️ 朗讀語言：" : "🗣️ 朗讀語言："}</span>
                   <button
                     id="lang-cantonese"
                     onClick={() => {
@@ -272,7 +299,7 @@ export default function App() {
                   aria-label="語音朗讀今日祝福"
                 >
                   <Volume2 className="w-5 h-5 stroke-[3]" />
-                  {isWelcomeSpeaking ? "停止播報" : "聽語音 🔊"}
+                  {isWelcomeSpeaking ? (isHK ? "停止朗讀" : "停止播報") : (isHK ? "聽語音 🔊" : "聽語音 🔊")}
                 </button>
               </div>
               
@@ -301,7 +328,7 @@ export default function App() {
           <AlertCircle className="w-8 h-8 text-[#D84315] shrink-0 mt-1 stroke-[3]" />
           <div className="flex-1 min-w-0">
             <span className="text-lg font-black text-[#D84315] tracking-wider uppercase block">
-              💡 溫馨養生生活指南
+              {isHK ? "💡 溫馨養生生活指南" : "💡 溫馨養生生活指南"}
             </span>
             <AnimatePresence mode="wait">
               <motion.p
@@ -312,7 +339,7 @@ export default function App() {
                 transition={{ duration: 0.3 }}
                 className="text-xl sm:text-2xl font-bold text-[#5D4037] mt-1.5 leading-relaxed"
               >
-                {WELLNESS_TIPS[tipIndex]}
+                {currentTips[tipIndex]}
               </motion.p>
             </AnimatePresence>
           </div>
@@ -323,6 +350,7 @@ export default function App() {
           <div className="flex flex-col sm:flex-row gap-5 sm:gap-8 justify-center">
             {INSTRUCTION_CATEGORIES.map((cat) => {
               const isActive = selectedCategory === cat.id;
+              const catName = isHK ? (cat.nameCantonese || cat.name) : cat.name;
               return (
                 <button
                   key={cat.id}
@@ -338,7 +366,7 @@ export default function App() {
                   <span className="shrink-0">
                     {getCategoryIcon(cat.icon)}
                   </span>
-                  <span>{cat.name}</span>
+                  <span>{catName}</span>
                 </button>
               );
             })}
@@ -347,7 +375,15 @@ export default function App() {
           {/* Subtext explaining selected scenario */}
           <div className="text-center mt-6">
             <p className="text-xl sm:text-2xl text-[#5D4037] font-bold">
-              👉 當前場景：<span className="text-[#D84315] font-black">{activeCategoryData.description}</span>。點擊下方卡片有詳細步驟哦！
+              {isHK ? (
+                <>
+                  👉 當前場景：<span className="text-[#D84315] font-black">{activeCategoryDescription}</span>。撳下面嘅卡片睇詳細步驟！
+                </>
+              ) : (
+                <>
+                  👉 當前場景：<span className="text-[#D84315] font-black">{activeCategoryDescription}</span>。點擊下方卡片有詳細步驟哦！
+                </>
+              )}
             </p>
           </div>
         </section>
@@ -366,6 +402,7 @@ export default function App() {
               <InstructionCard
                 key={item.id}
                 item={item}
+                voiceLang={voiceLang}
                 onClick={() => setActiveItem(item)}
               />
             ))}
@@ -387,7 +424,10 @@ export default function App() {
               👵 以愛為名，貼心陪伴 👴
             </span>
             <p className="text-lg sm:text-xl text-[#5D4037] font-bold max-w-4xl leading-relaxed">
-              本工具專為長輩的日常生活與家庭防護設計。我們將操作介面放大、去除繁瑣設定，並內建高品質中文發音，即使視力不佳、手腳微顫、或不熟電腦，也能在簡單的操作中聽見叮嚀與問候。
+              {isHK 
+                ? "本工具專為長輩嘅日常生活同家庭防護設計。我哋將操作界面放大、去走繁瑣設定，並內建高品質中文發音，就算視力唔好、手腳微震、或者唔熟電腦，都可以在簡單操作入面聽見親切嘅叮嚀同問候。"
+                : "本工具專為長輩的日常生活與家庭防護設計。我們將操作介面放大、去除繁瑣設定，並內建高品質中文發音，即使視力不佳、手腳微顫、或不熟電腦，也能在簡單的操作中聽見叮嚀與問候。"
+              }
             </p>
             <div className="flex justify-center items-center gap-4 mt-2">
               <div className="h-4 w-16 bg-[#D84315] rounded-full"></div>
