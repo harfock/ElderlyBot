@@ -13,6 +13,7 @@ import {
 import { INSTRUCTION_CATEGORIES, InstructionItem, CategoryGroup, getBestVoice } from "./types";
 import InstructionCard from "./components/InstructionCard";
 import DetailModal from "./components/DetailModal";
+import WeatherWidget from "./components/WeatherWidget";
 
 const WELLNESS_TIPS_MANDARIN = [
   "多喝溫水能讓喉嚨更舒服，還能促進身體排毒喔！",
@@ -223,7 +224,7 @@ export default function App() {
   const currentTips = isHK ? WELLNESS_TIPS_CANTONESE : WELLNESS_TIPS_MANDARIN;
 
   return (
-    <div className="min-h-screen bg-[#FFF8E1] text-[#1E1E1E] font-sans flex flex-col antialiased pb-12 selection:bg-[#FBE9E7] selection:text-[#D84315] select-text border-t-[20px] border-[#D84315]">
+    <div className="relative min-h-screen bg-[#FFF8E1] text-[#1E1E1E] font-sans flex flex-col antialiased pb-12 selection:bg-[#FBE9E7] selection:text-[#D84315] select-text border-t-[20px] border-[#D84315]">
       
       {/* Upper Warm Header Decorator Bar */}
       <div className="bg-[#D84315] text-white py-2.5 px-6 flex justify-between items-center text-sm sm:text-base font-black tracking-wider border-b-4 border-[#1E1E1E]">
@@ -231,7 +232,7 @@ export default function App() {
           <Heart className="w-5 h-5 fill-current animate-pulse text-yellow-300" />
           <span>{isHK ? "長輩守護 ・ 溫馨關懷提醒板" : "孝心陪伴 ・ 溫馨守護板"}</span>
         </div>
-        <div>
+        <div className="hidden lg:block lg:mr-[220px]">
           <span>{isHK ? "超大字體 ✦ 高對比 ✦ 貼心廣東話及國語" : "大字版 ✦ 高對比 ✦ 語音播報輔助"}</span>
         </div>
       </div>
@@ -448,6 +449,9 @@ export default function App() {
         </footer>
 
       </main>
+
+      {/* Real-time Weather Tips Overlay Widget */}
+      <WeatherWidget voiceLang={voiceLang} />
     </div>
   );
 }
