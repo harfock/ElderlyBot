@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
   Dumbbell, 
@@ -39,6 +39,8 @@ export default function App() {
   const [isWelcomeSpeaking, setIsWelcomeSpeaking] = useState(false);
   const [tipIndex, setTipIndex] = useState(0);
   const [voiceLang, setVoiceLang] = useState<"zh-HK" | "zh-TW">("zh-HK"); // Default to Cantonese (廣東話)
+
+  const actionHeaderRef = useRef<HTMLDivElement>(null);
 
   const isHK = voiceLang === "zh-HK";
 
@@ -250,7 +252,7 @@ export default function App() {
                 
                 {/* Voice Selection Toolbar */}
                 <div className="flex items-center gap-2 bg-[#FFF8E1] p-1.5 rounded-2xl border-2 border-[#D84315]/20">
-                  <span className="text-sm sm:text-base font-black text-gray-700 ml-1">{isHK ? "🗣️ 朗讀語言：" : "🗣️ 朗讀語言："}</span>
+                  <span className="text-sm sm:text-base font-black text-gray-700 ml-1">{isHK ? "🗣️ 語言：" : "🗣️ 語言："}</span>
                   <button
                     id="lang-cantonese"
                     onClick={() => {
@@ -266,7 +268,7 @@ export default function App() {
                         : "bg-white text-gray-700 border-gray-300 hover:bg-orange-50"
                     }`}
                   >
-                    🇭🇰 廣東話 (粵語)
+                    🇭🇰 廣東話
                   </button>
                   <button
                     id="lang-mandarin"
@@ -299,7 +301,7 @@ export default function App() {
                   aria-label="語音朗讀今日祝福"
                 >
                   <Volume2 className="w-5 h-5 stroke-[3]" />
-                  {isWelcomeSpeaking ? (isHK ? "停止朗讀" : "停止播報") : (isHK ? "聽語音 🔊" : "聽語音 🔊")}
+                  {isWelcomeSpeaking ? (isHK ? "停止" : "停止") : (isHK ? "聽語音 🔊" : "聽語音 🔊")}
                 </button>
               </div>
               
@@ -355,7 +357,12 @@ export default function App() {
                 <button
                   key={cat.id}
                   id={`tab-btn-${cat.id}`}
-                  onClick={() => setSelectedCategory(cat.id)}
+                  onClick={() => {
+                    setSelectedCategory(cat.id);
+                    setTimeout(() => {
+                      actionHeaderRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }, 60);
+                  }}
                   className={`flex items-center justify-center gap-4 py-5 px-8 text-2xl sm:text-3.5xl font-black rounded-[36px] border-[6px] border-[#1E1E1E] transition-all transform hover:scale-102 active:translate-y-1 cursor-pointer select-none shadow-[8px_8px_0px_#1E1E1E] ${
                     isActive
                       ? "bg-[#D84315] text-white"
@@ -373,7 +380,7 @@ export default function App() {
           </div>
           
           {/* Subtext explaining selected scenario */}
-          <div className="text-center mt-6">
+          <div className="text-center mt-6" ref={actionHeaderRef}>
             <p className="text-xl sm:text-2xl text-[#5D4037] font-bold">
               {isHK ? (
                 <>

@@ -10,7 +10,12 @@ interface DetailModalProps {
   voiceLang?: "zh-HK" | "zh-TW";
 }
 
-export default function DetailModal({ item, isOpen, onClose, voiceLang = "zh-HK" }: DetailModalProps) {
+export default function DetailModal({ 
+  item, 
+  isOpen, 
+  onClose, 
+  voiceLang = "zh-HK"
+}: DetailModalProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [fontSize, setFontSize] = useState<"large" | "larger" | "giant">("larger");
   const [speechSpeed, setSpeechSpeed] = useState<number>(0.8); // Slightly slower for better elder clarity
