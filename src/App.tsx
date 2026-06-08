@@ -14,6 +14,7 @@ import { INSTRUCTION_CATEGORIES, InstructionItem, CategoryGroup, getBestVoice } 
 import InstructionCard from "./components/InstructionCard";
 import DetailModal from "./components/DetailModal";
 import WeatherWidget from "./components/WeatherWidget";
+import CookingSection from "./components/CookingSection";
 
 const WELLNESS_TIPS_MANDARIN = [
   "多喝溫水能讓喉嚨更舒服，還能促進身體排毒喔！",
@@ -381,40 +382,46 @@ export default function App() {
           </div>
           
           {/* Subtext explaining selected scenario */}
-          <div className="text-center mt-6" ref={actionHeaderRef}>
-            <p className="text-xl sm:text-2xl text-[#5D4037] font-bold">
-              {isHK ? (
-                <>
-                  👉 當前場景：<span className="text-[#D84315] font-black">{activeCategoryDescription}</span>。撳下面嘅卡片睇詳細步驟！
-                </>
-              ) : (
-                <>
-                  👉 當前場景：<span className="text-[#D84315] font-black">{activeCategoryDescription}</span>。點擊下方卡片有詳細步驟哦！
-                </>
-              )}
-            </p>
-          </div>
+          {selectedCategory !== "cooking" && (
+            <div className="text-center mt-6" ref={actionHeaderRef}>
+              <p className="text-xl sm:text-2xl text-[#5D4037] font-bold">
+                {isHK ? (
+                  <>
+                    👉 當前場景：<span className="text-[#D84315] font-black">{activeCategoryDescription}</span>。撳下面嘅卡片睇詳細步驟！
+                  </>
+                ) : (
+                  <>
+                    👉 當前場景：<span className="text-[#D84315] font-black">{activeCategoryDescription}</span>。點擊下方卡片有詳細步驟哦！
+                  </>
+                )}
+              </p>
+            </div>
+          )}
         </section>
 
         {/* Responsive 2x3 Grid of Instruction Cards */}
         <section className="mb-10">
-          <motion.div 
-            id="instruction-grid"
-            key={selectedCategory}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10"
-          >
-            {activeCategoryData.items.map((item) => (
-              <InstructionCard
-                key={item.id}
-                item={item}
-                voiceLang={voiceLang}
-                onClick={() => setActiveItem(item)}
-              />
-            ))}
-          </motion.div>
+          {selectedCategory === "cooking" ? (
+            <CookingSection voiceLang={voiceLang} />
+          ) : (
+            <motion.div 
+              id="instruction-grid"
+              key={selectedCategory}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10"
+            >
+              {activeCategoryData.items.map((item) => (
+                <InstructionCard
+                  key={item.id}
+                  item={item}
+                  voiceLang={voiceLang}
+                  onClick={() => setActiveItem(item)}
+                />
+              ))}
+            </motion.div>
+          )}
         </section>
 
         {/* Detailed Modal popup */}

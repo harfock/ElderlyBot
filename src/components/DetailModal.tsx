@@ -4,7 +4,7 @@ import { Volume2, X, Play, Square } from "lucide-react";
 import { InstructionItem, getBestVoice } from "../types";
 
 interface DetailModalProps {
-  item: InstructionItem;
+  item: InstructionItem | null | undefined;
   isOpen: boolean;
   onClose: () => void;
   voiceLang?: "zh-HK" | "zh-TW";
@@ -23,9 +23,9 @@ export default function DetailModal({
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   const isHK = voiceLang === "zh-HK";
-  const title = isHK ? (item.titleCantonese || item.title) : item.title;
-  const fullTip = isHK ? (item.fullTipCantonese || item.fullTip) : item.fullTip;
-  const voiceText = isHK ? (item.voiceTextCantonese || item.voiceText) : item.voiceText;
+  const title = item ? (isHK ? (item.titleCantonese || item.title) : item.title) : "";
+  const fullTip = item ? (isHK ? (item.fullTipCantonese || item.fullTip) : item.fullTip) : "";
+  const voiceText = item ? (isHK ? (item.voiceTextCantonese || item.voiceText) : item.voiceText) : "";
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.speechSynthesis) {
@@ -132,7 +132,7 @@ export default function DetailModal({
 
   return (
     <AnimatePresence>
-      {isOpen && (
+      {isOpen && item && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           {/* Backdrop */}
           <motion.div
@@ -157,7 +157,7 @@ export default function DetailModal({
             <div className="flex flex-wrap items-center justify-between gap-4 p-6 sm:p-8 border-b-[6px] border-dashed border-[#D84315] bg-[#FFF3E0]">
               <div className="flex items-center gap-4">
                 <span className="text-5xl select-none" role="img" aria-label={title}>
-                  {item.emoji}
+                  {item?.emoji}
                 </span>
                 <h2 className="text-3xl sm:text-5xl font-black text-[#D84315] tracking-tight">
                   {title}

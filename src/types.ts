@@ -271,6 +271,15 @@ export const INSTRUCTION_CATEGORIES: CategoryGroup[] = [
         voiceTextCantonese: "晚安，夜拉，夠鐘睏啦。蓋實好被子，祝今晚有個香軟嘅美夢。我哋明朝見囉！"
       }
     ]
+  },
+  {
+    id: "cooking",
+    name: "🍳 蒸炒炆焗",
+    nameCantonese: "🍳 蒸炒炆焗",
+    icon: "utensils",
+    description: "為長輩準備的低鈉少油精選食譜，美味健康",
+    descriptionCantonese: "為長輩特製嘅少油低鹽抗三高家常食譜，好嚼好吞",
+    items: []
   }
 ];
 
