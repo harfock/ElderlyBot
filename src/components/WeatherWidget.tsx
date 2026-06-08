@@ -407,13 +407,15 @@ export default function WeatherWidget({ voiceLang }: WeatherWidgetProps) {
     const cleanSpeechText = prefixText.replace(/[^\u4e00-\u9fa5，。！.％\d度、分/千米公里公里]/g, "");
 
     const utterance = new SpeechSynthesisUtterance(cleanSpeechText);
-    utterance.lang = voiceLang;
     utterance.rate = 0.80; // clear slow cadence for seniors
 
     const voices = synthRef.current.getVoices();
     const bestVoice = getBestVoice(voices, voiceLang);
     if (bestVoice) {
       utterance.voice = bestVoice;
+      utterance.lang = bestVoice.lang;
+    } else {
+      utterance.lang = voiceLang === "zh-TW" ? "zh-CN" : "zh-HK";
     }
 
     utterance.onstart = () => setIsSpeaking(true);

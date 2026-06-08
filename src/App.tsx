@@ -64,6 +64,18 @@ export default function App() {
     return () => clearInterval(timer);
   }, []);
 
+  // Warm up voices on mount (crucial for Safari/Chrome async voices loading)
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      window.speechSynthesis.getVoices();
+      if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = () => {
+          window.speechSynthesis.getVoices();
+        };
+      }
+    }
+  }, []);
+
   // Cycle wellness tips every 20 seconds
   useEffect(() => {
     const interval = setInterval(() => {
@@ -185,7 +197,6 @@ export default function App() {
       : "。本程式已為您配置超大字體與貼心國語。請點擊下方的任何一項卡片，即可查看詳細指示並為您語音朗讀喔。";
     
     const utterance = new SpeechSynthesisUtterance(plainGreeting + extraInstructionsMessage);
-    utterance.lang = voiceLang;
     utterance.rate = 0.82; // Slower cadence for clearer listening
 
     utterance.onstart = () => setIsWelcomeSpeaking(true);
@@ -197,6 +208,9 @@ export default function App() {
     const bestVoice = getBestVoice(voices, voiceLang);
     if (bestVoice) {
       utterance.voice = bestVoice;
+      utterance.lang = bestVoice.lang;
+    } else {
+      utterance.lang = voiceLang === "zh-TW" ? "zh-CN" : "zh-HK";
     }
 
     window.speechSynthesis.speak(utterance);

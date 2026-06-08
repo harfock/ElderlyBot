@@ -63,7 +63,6 @@ export default function DetailModal({
     utteranceRef.current = utterance;
 
     // Set voice options based on chosen language
-    utterance.lang = voiceLang; 
     utterance.rate = speechSpeed; 
     utterance.pitch = 1.0;
 
@@ -85,6 +84,9 @@ export default function DetailModal({
     const bestVoice = getBestVoice(voices, voiceLang);
     if (bestVoice) {
       utterance.voice = bestVoice;
+      utterance.lang = bestVoice.lang;
+    } else {
+      utterance.lang = voiceLang === "zh-TW" ? "zh-CN" : "zh-HK";
     }
 
     synthRef.current.speak(utterance);
@@ -208,12 +210,14 @@ export default function DetailModal({
                                 setTimeout(() => {
                                   const textToSpeak = voiceText || fullTip;
                                   const utterance = new SpeechSynthesisUtterance(textToSpeak);
-                                  utterance.lang = voiceLang;
                                   utterance.rate = speed.val;
                                   const voices = window.speechSynthesis.getVoices();
                                   const bestVoice = getBestVoice(voices, voiceLang);
                                   if (bestVoice) {
                                     utterance.voice = bestVoice;
+                                    utterance.lang = bestVoice.lang;
+                                  } else {
+                                    utterance.lang = voiceLang === "zh-TW" ? "zh-CN" : "zh-HK";
                                   }
                                   utterance.onstart = () => setIsPlaying(true);
                                   utterance.onend = () => setIsPlaying(false);

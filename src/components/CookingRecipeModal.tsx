@@ -84,7 +84,6 @@ export default function CookingRecipeModal({
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
     utteranceRef.current = utterance;
 
-    utterance.lang = voiceLang;
     utterance.rate = speechSpeed;
     utterance.pitch = 1.0;
 
@@ -105,6 +104,9 @@ export default function CookingRecipeModal({
     const bestVoice = getBestVoice(voices, voiceLang);
     if (bestVoice) {
       utterance.voice = bestVoice;
+      utterance.lang = bestVoice.lang;
+    } else {
+      utterance.lang = voiceLang === "zh-TW" ? "zh-CN" : "zh-HK";
     }
 
     synthRef.current.speak(utterance);
