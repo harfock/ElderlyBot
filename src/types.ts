@@ -284,41 +284,81 @@ export const INSTRUCTION_CATEGORIES: CategoryGroup[] = [
 ];
 
 export function getBestVoice(voices: SpeechSynthesisVoice[], lang: "zh-HK" | "zh-TW"): SpeechSynthesisVoice | null {
+  if (!voices || voices.length === 0) return null;
+
+  // Normalize/clean helper for locale code comparisons
+  const clean = (str: string) => str.toLowerCase().replace(/_/g, "-");
+
   if (lang === "zh-HK") {
-    // Cantonese detection list
-    const cantoneseSearches = ["zh-hk", "yue", "cantonese", "zh-yue"];
-    
-    // First, look for a strict match in lang or name
-    for (const token of cantoneseSearches) {
-      const found = voices.find(v => {
-        const l = v.lang.toLowerCase();
-        const n = v.name.toLowerCase();
-        return l.includes(token) || n.includes(token);
-      });
-      if (found) return found;
-    }
-  } else {
-    // Mandarin TW selection list
-    const twSearches = ["zh-tw", "cmn-tw", "zh-hant-tw", "zh-hant"];
-    for (const token of twSearches) {
-      const found = voices.find(v => {
-        const l = v.lang.toLowerCase();
-        const n = v.name.toLowerCase();
-        return l.includes(token) || n.includes(token);
-      });
-      if (found) return found;
-    }
-    // Fallback search: Mandarin CN
-    const cnFallback = voices.find(v => {
-      const l = v.lang.toLowerCase();
-      return l.includes("zh-cn") || l.includes("cmn-cn") || l.includes("zh-hans");
+    // Cantonese matching
+    // 1. Strict language code check
+    const match1 = voices.find(v => {
+      const l = clean(v.lang);
+      return l === "zh-hk" || l === "zh-yue-hk" || l === "yue-hk";
     });
-    if (cnFallback) return cnFallback;
+    if (match1) return match1;
+
+    // 2. Substrings in language code or name (e.g., zh-hk, yue, cantonese)
+    const match2 = voices.find(v => {
+      const l = clean(v.lang);
+      const n = v.name.toLowerCase();
+      return l.includes("zh-hk") || l.includes("yue") || n.includes("cantonese") || n.includes("sinji") || n.includes("sin-ji") || n.includes("hong kong");
+    });
+    if (match2) return match2;
+    
+    // 3. Fallback search: any voice containing "hk" or "yue"
+    const match3 = voices.find(v => {
+      const l = clean(v.lang);
+      const n = v.name.toLowerCase();
+      return l.includes("hk") || l.includes("yue") || n.includes("cantonese");
+    });
+    if (match3) return match3;
+  } else {
+    // Mandarin matching
+    // 1. Taiwan Mandarin strict match
+    const matchTW1 = voices.find(v => {
+      const l = clean(v.lang);
+      return l === "zh-tw" || l === "zh-hant-tw" || l === "cmn-tw";
+    });
+    if (matchTW1) return matchTW1;
+
+    // 2. Substrings in name/lang for Taiwan Mandarin
+    const matchTW2 = voices.find(v => {
+      const l = clean(v.lang);
+      const n = v.name.toLowerCase();
+      return l.includes("zh-tw") || l.includes("hant-tw") || n.includes("taiwan") || n.includes("meijia") || n.includes("mei-jia");
+    });
+    if (matchTW2) return matchTW2;
+
+    // 3. Fallback to Mainland Mandarin (which is Mandarin/Putonghua, much closer and clear to understand than Cantonese)
+    const matchCN1 = voices.find(v => {
+      const l = clean(v.lang);
+      return l === "zh-cn" || l === "zh-hans-cn" || l === "cmn-cn";
+    });
+    if (matchCN1) return matchCN1;
+
+    const matchCN2 = voices.find(v => {
+      const l = clean(v.lang);
+      const n = v.name.toLowerCase();
+      return l.includes("zh-cn") || l.includes("hans-cn") || l.includes("zh-hans") || n.includes("tingting") || n.includes("mainland") || n.includes("liaoliao");
+    });
+    if (matchCN2) return matchCN2;
+
+    // 4. Fallback search: any voice containing "tw", "cn", "cmn", "mandarin", or "putonghua"
+    const matchCN3 = voices.find(v => {
+      const l = clean(v.lang);
+      const n = v.name.toLowerCase();
+      return l.includes("tw") || l.includes("cn") || l.includes("cmn") || n.includes("mandarin") || n.includes("putonghua") || n.includes("siri");
+    });
+    if (matchCN3) return matchCN3;
   }
 
   // Final fallback: any Chinese voice whatsoever
-  const finalFallback = voices.find(v => v.lang.toLowerCase().includes("zh"));
-  if (finalFallback) return finalFallback;
+  const anyZhMatched = voices.find(v => {
+    const l = clean(v.lang);
+    return l.startsWith("zh") || l.includes("yue");
+  });
+  if (anyZhMatched) return anyZhMatched;
 
   // Ultimate fallback: first available voice
   return voices[0] || null;
