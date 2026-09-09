@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elderly Reader - Big Text AI</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Microsoft JhengHei", sans-serif;
+            background-color: #121212;
+            color: #FFFFFF;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .config-panel {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .config-panel input {
+            flex: 1;
+            padding: 8px 12px;
+            background: #2C2C2E;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-rewrite {
+            background-color: #007AFF;
+            color: white;
+        }
+
+        .btn-clear {
+            background-color: #3A3A3C;
+            color: white;
+            flex: 0.3;
+        }
+
+        /* 
+           8 Chinese characters per row:
+           100vw divided by 8 characters = ~11.5vw (adjusted for screen padding)
+        */
+        #big-text-input {
+            width: 100%;
+            flex-grow: 1;
+            background-color: #1C1C1E;
+            color: #FFCC00; /* High-contrast yellow */
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 10px;
+            font-size: calc((100vw - 30px) / 8);
+            line-height: 1.3;
+            resize: none;
+            outline: none;
+            word-break: break-all;
+        }
+
+        #big-text-input::placeholder {
+            color: #555555;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Optional API Key Input for Direct Cloud AI -->
+    <div class="config-panel">
+        <input type="password" id="api-key" placeholder="Enter OpenAI API Key (sk-...) or leave blank for local rules">
+    </div>
+
+    <div class="controls">
+        <button id="rewrite-btn" class="btn-rewrite" onclick="handleRewrite()">Rewrite with AI</button>
+        <button class="btn-clear" onclick="clearText()">Clear</button>
+    </div>
+
+    <textarea id="big-text-input" placeholder="請在此輸入文字..."></textarea>
+
+    <script>
+        const input = document.getElementById('big-text-input');
+        const apiKeyInput = document.getElementById('api-key');
+        const rewriteBtn = document.getElementById('rewrite-btn');
+
+        // Load saved API key if previously entered
+        if (localStorage.getItem('saved_api_key')) {
+            apiKeyInput.value = localStorage.getItem('saved_api_key');
+        }
+
+        apiKeyInput.addEventListener('change', () => {
+            localStorage.setItem('saved_api_key', apiKeyInput.value.trim());
+        });
+
+        async function handleRewrite() {
+            const rawText = input.value.trim();
+            if (!rawText) return;
+
+            const apiKey = apiKeyInput.value.trim();
+
+            if (apiKey) {
+                // Method 1: Instant AI Rewrite via Cloud API
+                await rewriteWithAI(rawText, apiKey);
+            } else {
+                // Method 2: Rule-Based Fallback (Instant, Offline)
+                rewriteWithRules(rawText);
+            }
+        }
+
+        async function rewriteWithAI(text, apiKey) {
+            rewriteBtn.disabled = true;
+            rewriteBtn.textContent = "Rewriting...";
+
+            try {
+                const response = await fetch("https://api.openai.com/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: "gpt-4o-mini",
+                        messages: [
+                            {
+                                role: "system",
+                                content: "You are an assistant that rewrites short notes, slang, or fragmented Cantonese/Chinese into clear, polite, and complete traditional Chinese sentences suitable for an elderly relative to read easily. Return ONLY the rewritten text with no additional explanations."
+                            },
+                            {
+                                role: "user",
+                                content: text
+                            }
+                        ],
+                        temperature: 0.3
+                    })
+                });
+
+                const data = await response.json();
+                if (data.choices && data.choices[0]) {
+                    input.value = data.choices[0].message.content.trim();
+                } else {
+                    alert("AI Error: Check your API key or network connection.");
+                }
+            } catch (err) {
+                alert("Failed to connect to AI server. Reverting to rule-based rewrite.");
+                rewriteWithRules(text);
+            } finally {
+                rewriteBtn.disabled = false;
+                rewriteBtn.textContent = "Rewrite with AI";
+            }
+        }
+
+        function rewriteWithRules(text) {
+            // Instant offline dictionary replacements for common short phrasing
+            const dictionary = [
+                { pattern: /(今晚|晚企)食乜/g, replacement: "今晚你想吃什麼？" },
+                { pattern: /(幾時)返/g, replacement: "您大約幾點回家？" },
+                { pattern: /得喇|知道喇/g, replacement: "好的，我已經知道了。" },
+                { pattern: /食咗飯未|食飯未/g, replacement: "您今天吃過飯了嗎？" },
+                { pattern: /遲啲/g, replacement: "我會稍微晚一點到達。" },
+                { pattern: /睇醫生/g, replacement: "我稍後陪您一起去睇醫生。" }
+            ];
+
+            let rewritten = text;
+            dictionary.forEach(rule => {
+                rewritten = rewritten.replace(rule.pattern, rule.replacement);
+            });
+
+            input.value = rewritten;
+        }
+
+        function clearText() {
+            input.value = '';
+            input.focus();
+        }
+    </script>
+</body>
+</html>
