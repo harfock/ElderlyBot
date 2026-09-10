@@ -1,11 +1,9 @@
-
-
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-HK">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warm Reader - Communication Box</title>
+    <title>Warm Reader - HK Communication & Voice Assistant</title>
     <style>
         :root {
             /* Dynamic Theme Variables - Dark Amber (Default) */
@@ -36,7 +34,7 @@
             --btn-warm-secondary: linear-gradient(145deg, #4A4034, #362E25);
         }
 
-        /* Theme: Cream Paper (Light Mode Fix) */
+        /* Theme: Cream Paper (Light Mode) */
         body.theme-cream-paper {
             --paper-bg: #FFF8EB;
             --text-color: #2A1F13;
@@ -59,9 +57,9 @@
 
         body {
             min-height: 100vh;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Microsoft JhengHei", sans-serif;
+            min-height: 100dvh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang HK", "PingFang TC", "Microsoft JhengHei", sans-serif;
             background-color: var(--paper-bg);
-            /* Notebook Lined Paper Effect */
             background-image: 
                 linear-gradient(90deg, transparent 85px, var(--margin-line-color) 85px, var(--margin-line-color) 87px, transparent 87px),
                 linear-gradient(var(--paper-line-color) 1.5px, transparent 1.5px);
@@ -70,12 +68,11 @@
             color: var(--ui-text);
             display: flex;
             flex-direction: column;
-            padding: 20px 80px 80px 105px; 
+            padding: 20px 20px 20px 105px; 
             overflow-x: hidden;
             transition: background-color 0.3s, color 0.3s;
         }
 
-        /* 3D Tactile Buttons */
         .btn-3d {
             border: 1px solid var(--border-color);
             border-radius: 10px;
@@ -103,26 +100,36 @@
                 inset 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        /* Left Floating Sidebar */
+        /* Left Sidebar - Responsive Auto-Fitting */
         .punctuation-sidebar {
             position: fixed;
             top: 50%;
             left: 10px;
             transform: translateY(-50%);
-            width: 80px;
+            width: 82px;
+            max-height: 96vh;
+            max-height: 96dvh;
             background: var(--card-bg);
             backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            padding: 10px 6px;
+            padding: 8px 4px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
             z-index: 1000;
             transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
+            overflow-y: auto;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .punctuation-sidebar::-webkit-scrollbar {
+            width: 3px;
+        }
+        .punctuation-sidebar::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
         }
 
         .punctuation-sidebar.collapsed {
@@ -135,7 +142,7 @@
             color: var(--ui-text);
             cursor: pointer;
             font-size: 12px;
-            padding: 4px;
+            padding: 2px;
             transition: transform 0.3s;
         }
 
@@ -146,7 +153,7 @@
         .sidebar-content {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 4px;
             width: 100%;
             align-items: center;
             transition: opacity 0.2s;
@@ -159,14 +166,15 @@
 
         .btn-sidebar-action {
             width: 100%;
-            padding: 10px 2px;
-            font-size: 13px;
+            padding: 6px 2px;
+            font-size: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            line-height: 1.2;
+            line-height: 1.1;
             text-align: center;
+            flex-shrink: 0;
         }
 
         .btn-sidebar-rewrite {
@@ -174,43 +182,56 @@
             color: #FFF8E7;
         }
 
-        .btn-sidebar-clear {
+        .btn-sidebar-utility {
             background: var(--btn-warm-secondary);
         }
 
         .sidebar-divider {
-            width: 80%;
+            width: 85%;
             height: 1px;
             background: var(--border-color);
-            margin: 4px 0;
+            margin: 2px 0;
+            flex-shrink: 0;
         }
 
         .punc-group {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
             width: 100%;
             align-items: center;
         }
 
         .btn-punc {
             width: 48px;
-            height: 44px;
-            font-size: 20px;
+            height: 36px;
+            font-size: 17px;
             background: var(--punc-btn-bg);
             color: var(--punc-text-color);
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
 
-        /* Right Settings & History Drawer */
+        @media (max-height: 700px) {
+            .btn-sidebar-action {
+                padding: 4px 1px;
+                font-size: 11px;
+            }
+            .btn-punc {
+                height: 30px;
+                font-size: 15px;
+            }
+        }
+
+        /* Right Settings Sidebar */
         .right-sidebar {
             position: fixed;
             top: 0;
             right: 0;
             bottom: 0;
-            width: 300px;
+            width: 320px;
             background: var(--card-bg);
             backdrop-filter: blur(16px);
             border-left: 1px solid var(--border-color);
@@ -246,7 +267,7 @@
         }
 
         .setting-section h3 {
-            font-size: 15px;
+            font-size: 14px;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 4px;
             color: var(--ui-text);
@@ -275,7 +296,7 @@
             border: 1px solid var(--border-color);
             color: var(--ui-text);
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             outline: none;
         }
 
@@ -297,7 +318,7 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            max-height: 220px;
+            max-height: 200px;
             overflow-y: auto;
         }
 
@@ -308,7 +329,7 @@
             background: rgba(0,0,0,0.08);
             padding: 10px;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             border: 1px solid var(--border-color);
         }
 
@@ -323,36 +344,39 @@
             word-break: break-all;
         }
 
-        /* Main Workspace Layout */
+        /* Main Workspace */
         .main-container {
             display: flex;
             flex-direction: column;
             flex-grow: 1;
+            width: 100%;
         }
 
         .instruction-banner {
-            font-size: 15px;
+            font-size: 13px;
             color: var(--ui-text);
             background: var(--card-bg);
             border: 1px dashed var(--border-color);
-            padding: 8px 16px;
+            padding: 8px 12px;
             border-radius: 8px;
             margin-bottom: 8px;
-            line-height: 1.5;
+            line-height: 1.4;
             display: flex;
             align-items: center;
             gap: 8px;
+            margin-right: 120px;
         }
 
         #big-text-input {
             width: 100%;
             flex-grow: 1;
+            min-height: 60vh;
             background: transparent;
             color: var(--text-color);
             border: none;
             padding: 0;
             margin-top: calc(var(--line-height-px) * 0.1);
-            font-size: calc((100vw - 190px) / var(--chars-per-row));
+            font-size: clamp(20px, calc((100vw - 160px) / var(--chars-per-row)), 72px);
             line-height: var(--line-height-px);
             resize: none;
             outline: none;
@@ -367,14 +391,14 @@
             opacity: 0.4;
         }
 
-        /* Toast Banner Notification */
         .toast {
             position: fixed;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(184, 45, 30, 0.92);
-            color: white;
+            background: rgba(36, 32, 28, 0.95);
+            color: var(--ui-text);
+            border: 1px solid var(--border-color);
             padding: 12px 24px;
             border-radius: 8px;
             font-size: 14px;
@@ -383,11 +407,28 @@
             z-index: 2000;
             text-align: center;
         }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px 10px 15px 75px;
+            }
+            .punctuation-sidebar {
+                left: 4px;
+                width: 68px;
+            }
+            .btn-punc {
+                width: 40px;
+            }
+            .instruction-banner {
+                margin-right: 0;
+                margin-top: 45px;
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body class="theme-warm-amber">
 
-    <!-- Toast Notification Banner for Errors -->
     <div id="toast" class="toast"></div>
 
     <!-- Left Floating Sidebar -->
@@ -396,10 +437,19 @@
         
         <div class="sidebar-content">
             <button id="rewrite-btn" class="btn-3d btn-sidebar-action btn-sidebar-rewrite" onclick="handleRewrite()">
-                AI 重寫<br><span style="font-size:10px; opacity:0.8;">Rewrite</span>
+                AI 重寫<br><span style="font-size:9px; opacity:0.8;">Rewrite</span>
             </button>
-            <button class="btn-3d btn-sidebar-action btn-sidebar-clear" onclick="clearText()">
-                清除<br><span style="font-size:10px; opacity:0.8;">Clear</span>
+
+            <button class="btn-3d btn-sidebar-action btn-sidebar-utility" onclick="copyText()">
+                複製<br><span style="font-size:9px; opacity:0.8;">Copy</span>
+            </button>
+
+            <button class="btn-3d btn-sidebar-action btn-sidebar-utility" onclick="pasteText()">
+                貼上<br><span style="font-size:9px; opacity:0.8;">Paste</span>
+            </button>
+
+            <button class="btn-3d btn-sidebar-action btn-sidebar-utility" onclick="clearText()">
+                清除<br><span style="font-size:9px; opacity:0.8;">Clear</span>
             </button>
 
             <div class="sidebar-divider"></div>
@@ -420,11 +470,40 @@
 
     <button class="btn-3d right-toggle-btn" onclick="toggleRightSidebar()">⚙ 設定 Settings</button>
 
-    <!-- Right Settings & History Sidebar -->
+    <!-- Right Settings Drawer -->
     <aside id="right-sidebar" class="right-sidebar">
         <div class="setting-section">
             <h3>API 金鑰 (API Key)</h3>
-            <input type="password" id="api-key" class="input-api" placeholder="Enter OpenRouter API Key (sk-or-...)">
+            <input type="password" id="api-key" class="input-api" placeholder="Enter OpenRouter API Key">
+        </div>
+
+        <div class="setting-section">
+            <h3>語氣風格 (Tone Preset)</h3>
+            <select id="tone-select" class="select-theme">
+                <option value="preserve">保持原意 (Preserve Original)</option>
+                <option value="polish">修飾流暢 (Polished & Formal)</option>
+                <option value="warm">溫和親切 (Warm & Conversational)</option>
+            </select>
+        </div>
+
+        <div class="setting-section">
+            <h3>廣東話語音專用過濾 (HK Cantonese Filter)</h3>
+            <select id="filter-select" class="select-theme">
+                <option value="hk_clean">廣東話口語淨化 (Clean Spoken Cantonese)</option>
+                <option value="hk_to_written">廣東話轉書面語 (Convert to Formal Written Chinese)</option>
+                <option value="voice_stutter">去除語音重複/口吃 (Fix Stutters & Duplicates)</option>
+                <option value="none">不使用過濾器 (No Advanced Filter)</option>
+            </select>
+        </div>
+
+        <div class="setting-section">
+            <h3>點列/條理化 (Point-Form Style)</h3>
+            <select id="pointform-select" class="select-theme">
+                <option value="smart_bullet">智能列點 Bullet Points (•)</option>
+                <option value="smart_number">數字列點 Numbered List (1, 2, 3)</option>
+                <option value="smart_step">步驟流程 Step-by-Step Flow</option>
+                <option value="off">關閉 Off (Paragraphs)</option>
+            </select>
         </div>
 
         <div class="setting-section">
@@ -451,8 +530,8 @@
         <div class="setting-section">
             <h3>歷史紀錄 (History)</h3>
             <div class="history-actions">
-                <button class="btn-3d btn-hist-action btn-merge" onclick="mergeSelectedHistory()">合併選取 Merge</button>
-                <button class="btn-3d btn-hist-action btn-delete" onclick="deleteSelectedHistory()">刪除選取 Delete</button>
+                <button class="btn-3d btn-hist-action btn-merge" onclick="mergeSelectedHistory()">合併選取</button>
+                <button class="btn-3d btn-hist-action btn-delete" onclick="deleteSelectedHistory()">刪除選取</button>
             </div>
             <div id="history-list" class="history-list"></div>
         </div>
@@ -461,7 +540,7 @@
     <!-- Main Workspace -->
     <main class="main-container">
         <div class="instruction-banner">
-            💡 <span>點擊下方輸入框直接打字，側邊欄可插入標點符號與 AI 重寫。</span>
+            💡 <span>點擊下方輸入框輸入文字或貼上語音轉譯，側邊欄可進行 AI 重寫、廣東話淨化與點列化。</span>
         </div>
 
         <textarea id="big-text-input" placeholder="請在此輸入文字..."></textarea>
@@ -475,6 +554,54 @@
         const rewriteBtn = document.getElementById('rewrite-btn');
         const historyListEl = document.getElementById('history-list');
         const toastEl = document.getElementById('toast');
+
+        const TONE_BASE = {
+            preserve: "Keep original words and intent intact while fixing typos, missing punctuation, and minor awkwardness.",
+            polish: "Elevate vocabulary, refine sentence structure, remove awkward phrasing, and format into polished Chinese.",
+            warm: "Rewrite to sound empathetic, approachable, respectful, and polite."
+        };
+
+        const CANTONESE_FILTERS = {
+            hk_clean: `
+[HK CANTONESE SPEECH CLEANUP]
+- Process raw Hong Kong spoken Cantonese (廣東話口語).
+- REMOVE VOICE FILLERS & HESITATIONS: Strip words like '呃', '即係', '咁即係', '呢個呢個', '諗住', '你知啦', '咁樣' when used purely as speech hesitation.
+- RESOLVE SELF-CORRECTIONS: If speaker self-corrects mid-sentence (e.g., '兩點... 唔係, 三點先啱'), retain ONLY the final intended statement ('三點').
+- REMOVE DUPLICATED WORDS: Collapse accidental repeats caused by voice-to-text lag.
+- RETAIN authentic HK Cantonese phrasing without converting to standard written Chinese unless requested.
+            `,
+            hk_to_written: `
+[CANTONESE TO FORMAL WRITTEN CHINESE]
+- Convert spoken HK Cantonese into clean, standard formal written Chinese (書面語).
+- Convert Cantonese vocabulary to written Chinese (e.g., '聽日' -> '明天', '佢地' -> '他們', '睇下' -> '查看', '幾多' -> '多少').
+- Remove all spoken hesitations, stutters, and filler words.
+            `,
+            voice_stutter: `
+[STUTTER & REPETITION FILTER]
+- Focus strictly on cleaning speech-to-text duplication, stutters, and audio lag repeats.
+- Do not alter word choices or style beyond removing accidental repetitive noise.
+            `,
+            none: ""
+        };
+
+        const POINT_FORM_RULES = {
+            smart_bullet: `
+[SMART POINT-FORM FORMATTING]
+- Evaluate the text's structure.
+- IF text contains multiple distinct points, tasks, steps, concepts, or long sentences: convert into a bulleted list using '• '.
+- IF text is a single brief reminder or simple short sentence: keep as a clear single line without forcing unnecessary bullet points.
+            `,
+            smart_number: `
+[NUMBERED LIST FORMATTING]
+- IF text contains sequential steps, multiple items, or distinct points: format into a numbered list (1. 2. 3.).
+- IF text is a simple brief phrase: keep as a single clear sentence.
+            `,
+            smart_step: `
+[STEP-BY-STEP FLOW]
+- Format complex ideas or multiple instructions into structured operational steps (例如：步驟一：... 步驟二：...).
+            `,
+            off: "Maintain original paragraph layout without converting to point form."
+        };
 
         let charsPerRow = parseInt(localStorage.getItem('saved_chars_per_row')) || 8;
         let historyItems = JSON.parse(localStorage.getItem('saved_history_items')) || [];
@@ -512,7 +639,7 @@
         function showToast(msg) {
             toastEl.textContent = msg;
             toastEl.style.display = 'block';
-            setTimeout(() => { toastEl.style.display = 'none'; }, 4000);
+            setTimeout(() => { toastEl.style.display = 'none'; }, 3000);
         }
 
         function toggleLeftSidebar() {
@@ -550,6 +677,72 @@
             input.selectionStart = input.selectionEnd = start + char.length;
         }
 
+        async function copyText() {
+            const textToCopy = input.value;
+            if (!textToCopy.trim()) {
+                showToast("⚠️ 目前沒有文字可複製");
+                return;
+            }
+
+            try {
+                await navigator.clipboard.writeText(textToCopy);
+                showToast("📋 已成功複製全部文字");
+            } catch (err) {
+                input.select();
+                document.execCommand('copy');
+                showToast("📋 已複製全部文字");
+            }
+        }
+
+        async function pasteText() {
+            try {
+                const textFromClipboard = await navigator.clipboard.readText();
+                if (!textFromClipboard) {
+                    showToast("⚠️ 剪貼簿為空");
+                    return;
+                }
+
+                handleInitialClear();
+                input.focus();
+
+                const start = input.selectionStart;
+                const end = input.selectionEnd;
+                const currentText = input.value;
+
+                input.value = currentText.substring(0, start) + textFromClipboard + currentText.substring(end);
+                input.selectionStart = input.selectionEnd = start + textFromClipboard.length;
+
+                showToast("📥 已貼上剪貼簿內容");
+            } catch (err) {
+                showToast("⚠️ 無法讀取剪貼簿，請使用手動貼上");
+            }
+        }
+
+        function constructSystemPrompt() {
+            const toneKey = document.getElementById('tone-select').value;
+            const filterKey = document.getElementById('filter-select').value;
+            const pointFormKey = document.getElementById('pointform-select').value;
+
+            return `
+You are an expert communication assistant designed for Hong Kong Cantonese users and clear text refinement.
+
+[CORE OBJECTIVE]
+Transform raw, dictated, or typed Chinese input into clean, structured, and easy-to-read text.
+
+[TONE INSTRUCTION]
+${TONE_BASE[toneKey] || TONE_BASE.preserve}
+
+${CANTONESE_FILTERS[filterKey] || ""}
+
+${POINT_FORM_RULES[pointFormKey] || ""}
+
+[OUTPUT STYLING RULES]
+- Output ONLY the final processed text.
+- Do NOT add introductory greetings, robotic meta-announcements, explanations, or quotes around output.
+- Keep output clear, natural, and accessible.
+            `.trim();
+        }
+
         async function handleRewrite() {
             const rawText = input.value.trim();
             const apiKey = apiKeyInput.value.trim();
@@ -563,7 +756,9 @@
             }
 
             rewriteBtn.disabled = true;
-            rewriteBtn.innerHTML = "重寫中...<br><span style='font-size:10px;'>Rewriting</span>";
+            rewriteBtn.innerHTML = "重寫中...<br><span style='font-size:9px;'>Rewriting</span>";
+
+            const combinedSystemPrompt = constructSystemPrompt();
 
             try {
                 const response = await fetch(WORKER_URL, {
@@ -572,7 +767,7 @@
                     body: JSON.stringify({
                         text: rawText,
                         apiKey: apiKey,
-                        systemPrompt: "You are a communication assistant helping elderly users clearly format and rewrite text. Clean up grammar, fix typos, and preserve original intent without refusing user text unless strictly harmful."
+                        systemPrompt: combinedSystemPrompt
                     })
                 });
 
@@ -581,8 +776,8 @@
                 if (data.choices && data.choices[0] && data.choices[0].message) {
                     const rewritten = data.choices[0].message.content.trim();
                     
-                    if (rewritten.toLowerCase().includes("server busy") || rewritten.startsWith("unchanged :")) {
-                        showToast("⚠️ 重寫失敗：AI 未有及時回應，您的原始文字已保留。");
+                    if (rewritten.toLowerCase().includes("user safety") || rewritten.startsWith("Safety:")) {
+                        showToast("⚠️ 重寫失敗：觸發 AI 安全過濾機制，您的原始文字已保留。");
                     } else {
                         input.value = rewritten;
                         addHistoryItem(rewritten);
@@ -595,7 +790,7 @@
                 showToast("⚠️ 網路錯誤或 Worker 無法連線，原始文字已保留。");
             } finally {
                 rewriteBtn.disabled = false;
-                rewriteBtn.innerHTML = "AI 重寫<br><span style='font-size:10px; opacity:0.8;'>Rewrite</span>";
+                rewriteBtn.innerHTML = "AI 重寫<br><span style='font-size:9px; opacity:0.8;'>Rewrite</span>";
             }
         }
 
@@ -643,7 +838,7 @@
             }
 
             const selectedItems = historyItems.filter(item => selectedIds.includes(item.id));
-            const mergedText = selectedItems.map(item => item.text).join(" ");
+            const mergedText = selectedItems.map(item => item.text).join("\n\n");
 
             addHistoryItem(mergedText);
             isFirstInput = false;
