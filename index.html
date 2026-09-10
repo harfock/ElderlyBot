@@ -1,241 +1,594 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Enhanced Punctuation Toolbar</title>
-  <style>
-    :root {
-      --sidebar-width-expanded: 64px;
-      --sidebar-width-collapsed: 24px;
-      --paper-bg: #121214;
-      --paper-line-color: rgba(255, 255, 255, 0.05);
-      --margin-line-color: rgba(255, 85, 85, 0.25);
-      --btn-bg: linear-gradient(145deg, #2a2d32, #1f2125);
-      --btn-active-bg: linear-gradient(145deg, #18191c, #222428);
-      --accent-color: #00e5ff;
-      --text-color: #e0e6ed;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elderly Reader - Big Text AI</title>
+    <style>
+        :root {
+            --paper-bg: #121214;
+            --paper-line-color: rgba(255, 255, 255, 0.08);
+            --margin-line-color: rgba(255, 85, 85, 0.25);
+            --text-color: #FFCC00;
+            --ui-text: #E0E6ED;
+            --card-bg: rgba(22, 24, 28, 0.92);
+            --btn-bg: linear-gradient(145deg, #2a2d32, #1f2125);
+            --btn-active-bg: linear-gradient(145deg, #18191c, #222428);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-color: #007AFF;
+            --chars-per-row: 8;
+            --line-height-px: 48px;
+        }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+        /* Color Themes */
+        body.theme-yellow-black {
+            --paper-bg: #121214;
+            --text-color: #FFCC00;
+            --ui-text: #E0E6ED;
+            --paper-line-color: rgba(255, 255, 255, 0.08);
+        }
+        body.theme-white-black {
+            --paper-bg: #000000;
+            --text-color: #FFFFFF;
+            --ui-text: #FFFFFF;
+            --paper-line-color: rgba(255, 255, 255, 0.15);
+        }
+        body.theme-black-yellow {
+            --paper-bg: #FFD700;
+            --text-color: #000000;
+            --ui-text: #000000;
+            --paper-line-color: rgba(0, 0, 0, 0.15);
+            --margin-line-color: rgba(200, 0, 0, 0.3);
+            --card-bg: rgba(240, 210, 0, 0.95);
+            --btn-bg: linear-gradient(145deg, #e6c200, #cca300);
+            --btn-active-bg: linear-gradient(145deg, #b38f00, #997a00);
+            --border-color: rgba(0, 0, 0, 0.2);
+        }
+        body.theme-cyan-black {
+            --paper-bg: #050B14;
+            --text-color: #00E5FF;
+            --ui-text: #E0E6ED;
+            --paper-line-color: rgba(0, 229, 255, 0.1);
+        }
 
-    body {
-      min-height: 100vh;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: var(--text-color);
-      
-      /* Dark Realistic Lined Paper Texture using Pure CSS */
-      background-color: var(--paper-bg);
-      background-image: 
-        /* Red Notebook Margin Line */
-        linear-gradient(90deg, transparent 79px, var(--margin-line-color) 79px, var(--margin-line-color) 81px, transparent 81px),
-        /* Horizontal Paper Lines */
-        linear-gradient(var(--paper-line-color) 1px, transparent 1px),
-        /* Paper Grain / Noise Simulation */
-        radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 0);
-      background-size: 100% 100%, 100% 32px, 4px 4px;
-      line-height: 32px; /* Matches paper row lines */
-      padding-left: 90px; /* Offset for paper margin line */
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    /* Main Content Area */
-    .content {
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 20px;
-    }
+        body {
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Microsoft JhengHei", sans-serif;
+            background-color: var(--paper-bg);
+            /* Realistic Dark Lined Paper Pattern */
+            background-image: 
+                linear-gradient(90deg, transparent 50px, var(--margin-line-color) 50px, var(--margin-line-color) 52px, transparent 52px),
+                linear-gradient(var(--paper-line-color) 1px, transparent 1px);
+            background-size: 100% 100%, 100% var(--line-height-px);
+            color: var(--ui-text);
+            display: flex;
+            flex-direction: column;
+            padding: 15px 70px 15px 70px; /* Space for floating sidebars */
+            overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
 
-    .editor-area {
-      width: 100%;
-      min-height: 300px;
-      background: transparent;
-      border: none;
-      outline: none;
-      color: #f0f4f8;
-      font-size: 18px;
-      line-height: 32px; /* Align text with paper lines */
-      resize: vertical;
-      font-family: inherit;
-    }
+        /* 3D Modern Tactile Button Base Style */
+        .btn-3d {
+            border: none;
+            border-radius: 8px;
+            background: var(--btn-bg);
+            color: var(--ui-text);
+            font-weight: bold;
+            cursor: pointer;
+            outline: none;
+            user-select: none;
+            box-shadow: 
+                0 4px 0 rgba(0, 0, 0, 0.5),
+                0 5px 8px rgba(0, 0, 0, 0.3),
+                inset 0 1px 1px rgba(255, 255, 255, 0.15);
+            transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.2s;
+        }
 
-    /* Always Floating Sidebar Container */
-    .punctuation-sidebar {
-      position: fixed;
-      top: 50%;
-      right: 16px;
-      transform: translateY(-50%);
-      width: var(--sidebar-width-expanded);
-      background: rgba(22, 24, 28, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
-      box-shadow: 
-        0 10px 30px rgba(0, 0, 0, 0.5),
-        inset 0 1px 1px rgba(255, 255, 255, 0.1);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 8px 0;
-      z-index: 9999;
-      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      overflow: hidden;
-    }
+        .btn-3d:hover {
+            transform: translateY(-1px);
+            box-shadow: 
+                0 5px 0 rgba(0, 0, 0, 0.5),
+                0 7px 12px rgba(0, 0, 0, 0.4),
+                inset 0 1px 1px rgba(255, 255, 255, 0.25);
+        }
 
-    /* Collapsed State */
-    .punctuation-sidebar.collapsed {
-      width: var(--sidebar-width-collapsed);
-    }
+        .btn-3d:active {
+            background: var(--btn-active-bg);
+            transform: translateY(3px);
+            box-shadow: 
+                0 1px 0 rgba(0, 0, 0, 0.5),
+                0 2px 4px rgba(0, 0, 0, 0.4),
+                inset 0 2px 4px rgba(0, 0, 0, 0.6);
+        }
 
-    /* Collapse/Expand Toggle Handle */
-    .toggle-btn {
-      width: 100%;
-      height: 28px;
-      background: transparent;
-      border: none;
-      color: #8a94a6;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      transition: color 0.2s, transform 0.3s;
-    }
+        /* Left Floating Punctuation Sidebar */
+        .punctuation-sidebar {
+            position: fixed;
+            top: 50%;
+            left: 10px;
+            transform: translateY(-50%);
+            width: 54px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 8px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            z-index: 1000;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+        }
 
-    .toggle-btn:hover {
-      color: var(--accent-color);
-    }
+        .punctuation-sidebar.collapsed {
+            width: 22px;
+        }
 
-    .punctuation-sidebar.collapsed .toggle-btn {
-      transform: rotate(180deg);
-    }
+        .sidebar-toggle-btn {
+            background: transparent;
+            border: none;
+            color: var(--ui-text);
+            cursor: pointer;
+            font-size: 12px;
+            padding: 4px;
+            transition: transform 0.3s;
+        }
 
-    /* Button List */
-    .btn-group {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      width: 100%;
-      padding: 6px 8px;
-      align-items: center;
-      transition: opacity 0.2s ease;
-    }
+        .punctuation-sidebar.collapsed .sidebar-toggle-btn {
+            transform: rotate(180deg);
+        }
 
-    .punctuation-sidebar.collapsed .btn-group {
-      opacity: 0;
-      pointer-events: none;
-    }
+        .punc-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            align-items: center;
+            transition: opacity 0.2s;
+        }
 
-    /* Modern Tactile 3D Button Style */
-    .btn-3d {
-      width: 44px;
-      height: 44px;
-      border: none;
-      border-radius: 10px;
-      background: var(--btn-bg);
-      color: var(--text-color);
-      font-size: 18px;
-      font-weight: 600;
-      cursor: pointer;
-      position: relative;
-      outline: none;
-      user-select: none;
-      
-      /* 3D Depth Shadows */
-      box-shadow: 
-        0 4px 0 #121315,                   /* Bottom 3D edge */
-        0 5px 10px rgba(0, 0, 0, 0.4),     /* Soft drop shadow */
-        inset 0 1px 1px rgba(255, 255, 255, 0.15); /* Top bevel highlight */
-      
-      transition: transform 0.08s ease, box-shadow 0.08s ease, color 0.2s ease;
-    }
+        .punctuation-sidebar.collapsed .punc-group {
+            opacity: 0;
+            pointer-events: none;
+        }
 
-    .btn-3d:hover {
-      color: #fff;
-      transform: translateY(-1px);
-      box-shadow: 
-        0 5px 0 #121315,
-        0 7px 14px rgba(0, 0, 0, 0.5),
-        inset 0 1px 1px rgba(255, 255, 255, 0.25);
-    }
+        .btn-punc {
+            width: 38px;
+            height: 38px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    /* Pressed/Active 3D Effect */
-    .btn-3d:active {
-      background: var(--btn-active-bg);
-      transform: translateY(3px); /* Push down */
-      box-shadow: 
-        0 1px 0 #121315, /* Compressed 3D edge */
-        0 2px 4px rgba(0, 0, 0, 0.4),
-        inset 0 2px 4px rgba(0, 0, 0, 0.6); /* Inner depth shadow */
-      color: var(--accent-color);
-    }
+        /* Right Settings & History Drawer */
+        .right-sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 290px;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border-left: 1px solid var(--border-color);
+            padding: 60px 15px 20px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 999;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            overflow-y: auto;
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.7);
+        }
 
-    /* Decorative separator */
-    .divider {
-      width: 24px;
-      height: 1px;
-      background: rgba(255, 255, 255, 0.08);
-      margin: 4px 0;
-    }
-  </style>
+        .right-sidebar.open {
+            transform: translateX(0);
+        }
+
+        .right-toggle-btn {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 1001;
+            padding: 10px 14px;
+            background: var(--accent-color);
+            color: white;
+            font-size: 14px;
+        }
+
+        .setting-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .setting-section h3 {
+            font-size: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 4px;
+        }
+
+        .font-adjuster {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.2);
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .btn-step {
+            width: 32px;
+            height: 32px;
+            font-size: 18px;
+        }
+
+        .select-theme, .input-api {
+            width: 100%;
+            padding: 8px 10px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
+            color: var(--ui-text);
+            border-radius: 6px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        /* History Items */
+        .history-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-hist-action {
+            flex: 1;
+            padding: 6px;
+            font-size: 12px;
+        }
+
+        .btn-merge { background: #34C759; color: white; }
+        .btn-delete { background: #FF3B30; color: white; }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            background: rgba(0,0,0,0.2);
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            border: 1px solid var(--border-color);
+        }
+
+        .history-item input[type="checkbox"] {
+            margin-top: 2px;
+            transform: scale(1.1);
+        }
+
+        .history-text {
+            flex: 1;
+            cursor: pointer;
+            word-break: break-all;
+        }
+
+        /* Main Workspace */
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            gap: 12px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+        }
+
+        .btn-rewrite {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-clear {
+            flex: 0.3;
+            background: rgba(120, 120, 128, 0.3);
+        }
+
+        /* Responsive Big Text Area */
+        #big-text-input {
+            width: 100%;
+            flex-grow: 1;
+            background: transparent;
+            color: var(--text-color);
+            border: none;
+            padding: 0;
+            font-size: calc((100vw - 140px) / var(--chars-per-row));
+            line-height: var(--line-height-px);
+            resize: none;
+            outline: none;
+            word-break: break-all;
+            font-family: inherit;
+            font-weight: bold;
+        }
+
+        #big-text-input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+    </style>
 </head>
-<body>
+<body class="theme-yellow-black">
 
-  <main class="content">
-    <textarea class="editor-area" placeholder="Type here... Use the floating punctuation sidebar on the right to insert symbols."></textarea>
-  </main>
+    <!-- Left Floating Punctuation Sidebar -->
+    <aside id="left-sidebar" class="punctuation-sidebar">
+        <button class="sidebar-toggle-btn" onclick="toggleLeftSidebar()" title="Collapse/Expand">◄</button>
+        <div class="punc-group">
+            <button class="btn-3d btn-punc" onclick="insertPunctuation('，')">，</button>
+            <button class="btn-3d btn-punc" onclick="insertPunctuation('。')">。</button>
+            <button class="btn-3d btn-punc" onclick="insertPunctuation('？')">？</button>
+            <button class="btn-3d btn-punc" onclick="insertPunctuation('！')">！</button>
+            <button class="btn-3d btn-punc" onclick="insertPunctuation('：')">：</button>
+            <button class="btn-3d btn-punc" onclick="insertPunctuation('；')">；</button>
+            <button class="btn-3d btn-punc" onclick="insertPunctuation('「')">「</button>
+            <button class="btn-3d btn-punc" onclick="insertPunctuation('」')">」</button>
+            <button class="btn-3d btn-punc" onclick="insertPunctuation('、')">、</button>
+        </div>
+    </aside>
 
-  <!-- Always Floating Sidebar -->
-  <aside class="punctuation-sidebar" id="punctuationSidebar">
-    <button class="toggle-btn" id="toggleBtn" title="Toggle Sidebar">
-      &#10095; <!-- Right Arrow Icon -->
-    </button>
-    
-    <div class="divider"></div>
+    <!-- Right Drawer Toggle -->
+    <button class="btn-3d right-toggle-btn" onclick="toggleRightSidebar()">⚙ 設定 Settings</button>
 
-    <div class="btn-group">
-      <button class="btn-3d" onclick="insertPunctuation(',')">,</button>
-      <button class="btn-3d" onclick="insertPunctuation('.')">.</button>
-      <button class="btn-3d" onclick="insertPunctuation('?')">?</button>
-      <button class="btn-3d" onclick="insertPunctuation('!')">!</button>
-      <button class="btn-3d" onclick="insertPunctuation('“')">“ ”</button>
-      <button class="btn-3d" onclick="insertPunctuation(';')">;</button>
-      <button class="btn-3d" onclick="insertPunctuation(':')">:</button>
-      <button class="btn-3d" onclick="insertPunctuation('—')">—</button>
-    </div>
-  </aside>
+    <!-- Right Settings & History Sidebar -->
+    <aside id="right-sidebar" class="right-sidebar">
+        <div class="setting-section">
+            <h3>API 金鑰 (API Key)</h3>
+            <input type="password" id="api-key" class="input-api" placeholder="Enter OpenRouter API Key (sk-or-...)">
+        </div>
 
-  <script>
-    const sidebar = document.getElementById('punctuationSidebar');
-    const toggleBtn = document.getElementById('toggleBtn');
-    const editor = document.querySelector('.editor-area');
+        <div class="setting-section">
+            <h3>字體大小 (Font Size)</h3>
+            <div class="font-adjuster">
+                <span>每行字數 Chars/Row:</span>
+                <div>
+                    <button class="btn-3d btn-step" onclick="changeFontSize(1)">+</button>
+                    <span id="chars-display" style="margin: 0 6px; font-weight: bold;">8</span>
+                    <button class="btn-3d btn-step" onclick="changeFontSize(-1)">-</button>
+                </div>
+            </div>
+        </div>
 
-    // Toggle Sidebar Expand / Collapse
-    toggleBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('collapsed');
-    });
+        <div class="setting-section">
+            <h3>配色主題 (Theme)</h3>
+            <select id="theme-select" class="select-theme" onchange="applyTheme(this.value)">
+                <option value="theme-yellow-black">黃字黑底 (Yellow on Black)</option>
+                <option value="theme-white-black">白字黑底 (White on Black)</option>
+                <option value="theme-black-yellow">黑字黃底 (Black on Yellow)</option>
+                <option value="theme-cyan-black">青字黑底 (Cyan on Black)</option>
+            </select>
+        </div>
 
-    // Helper to insert punctuation at text cursor position
-    function insertPunctuation(char) {
-      editor.focus();
-      const start = editor.selectionStart;
-      const end = editor.selectionEnd;
-      const text = editor.value;
+        <div class="setting-section">
+            <h3>歷史紀錄 (History)</h3>
+            <div class="history-actions">
+                <button class="btn-3d btn-hist-action btn-merge" onclick="mergeSelectedHistory()">合併選取 Merge</button>
+                <button class="btn-3d btn-hist-action btn-delete" onclick="deleteSelectedHistory()">刪除選取 Delete</button>
+            </div>
+            <div id="history-list" class="history-list"></div>
+        </div>
+    </aside>
 
-      if (char === '“') {
-        // Wrap selected text or insert pair
-        const selected = text.substring(start, end);
-        editor.value = text.substring(0, start) + `“${selected}”` + text.substring(end);
-        editor.selectionStart = editor.selectionEnd = start + 1 + selected.length;
-      } else {
-        editor.value = text.substring(0, start) + char + text.substring(end);
-        editor.selectionStart = editor.selectionEnd = start + char.length;
-      }
-    }
-  </script>
+    <!-- Main Workspace -->
+    <main class="main-container">
+        <div class="controls">
+            <button id="rewrite-btn" class="btn-3d btn-action btn-rewrite" onclick="handleRewrite()">AI 重寫 Rewrite</button>
+            <button class="btn-3d btn-action btn-clear" onclick="clearText()">清除 Clear</button>
+        </div>
+
+        <textarea id="big-text-input" placeholder="請在此輸入文字..."></textarea>
+    </main>
+
+    <script>
+        // PASTE YOUR CLOUDFLARE WORKER URL HERE
+        const WORKER_URL = "https://openrouter-proxy.YOUR-SUBDOMAIN.workers.dev";
+
+        const input = document.getElementById('big-text-input');
+        const apiKeyInput = document.getElementById('api-key');
+        const rewriteBtn = document.getElementById('rewrite-btn');
+        const historyListEl = document.getElementById('history-list');
+
+        let charsPerRow = parseInt(localStorage.getItem('saved_chars_per_row')) || 8;
+        let historyItems = JSON.parse(localStorage.getItem('saved_history_items')) || [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('openrouter_key')) {
+                apiKeyInput.value = localStorage.getItem('openrouter_key');
+            }
+
+            const savedTheme = localStorage.getItem('saved_theme') || 'theme-yellow-black';
+            document.getElementById('theme-select').value = savedTheme;
+            applyTheme(savedTheme);
+
+            updateFontCSS();
+            renderHistory();
+        });
+
+        apiKeyInput.addEventListener('change', () => {
+            localStorage.setItem('openrouter_key', apiKeyInput.value.trim());
+        });
+
+        function toggleLeftSidebar() {
+            document.getElementById('left-sidebar').classList.toggle('collapsed');
+        }
+
+        function toggleRightSidebar() {
+            document.getElementById('right-sidebar').classList.toggle('open');
+        }
+
+        function changeFontSize(delta) {
+            charsPerRow = Math.max(4, Math.min(16, charsPerRow - delta));
+            localStorage.setItem('saved_chars_per_row', charsPerRow);
+            updateFontCSS();
+        }
+
+        function updateFontCSS() {
+            document.documentElement.style.setProperty('--chars-per-row', charsPerRow);
+            document.getElementById('chars-display').textContent = charsPerRow;
+        }
+
+        function applyTheme(themeClass) {
+            document.body.className = themeClass;
+            localStorage.setItem('saved_theme', themeClass);
+        }
+
+        function insertPunctuation(char) {
+            input.focus();
+            const start = input.selectionStart;
+            const end = input.selectionEnd;
+            const text = input.value;
+
+            input.value = text.substring(0, start) + char + text.substring(end);
+            input.selectionStart = input.selectionEnd = start + char.length;
+        }
+
+        async function handleRewrite() {
+            const rawText = input.value.trim();
+            const apiKey = apiKeyInput.value.trim();
+
+            if (!rawText) return;
+
+            if (!apiKey) {
+                alert("請在右側設定欄輸入 OpenRouter API Key");
+                toggleRightSidebar();
+                return;
+            }
+
+            rewriteBtn.disabled = true;
+            rewriteBtn.textContent = "Rewriting...";
+
+            try {
+                const response = await fetch(WORKER_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        text: rawText,
+                        apiKey: apiKey
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.choices && data.choices[0]) {
+                    const rewritten = data.choices[0].message.content.trim();
+                    input.value = rewritten;
+                    addHistoryItem(rewritten);
+                } else if (data.error) {
+                    alert("Error: " + (data.error.message || JSON.stringify(data.error)));
+                } else {
+                    alert("無法重寫文字，請檢查 API Key。");
+                }
+            } catch (err) {
+                alert("網路錯誤：請檢查 Cloudflare Worker 網址。");
+            } finally {
+                rewriteBtn.disabled = false;
+                rewriteBtn.textContent = "AI 重寫 Rewrite";
+            }
+        }
+
+        function addHistoryItem(text) {
+            if (!text) return;
+            historyItems.unshift({ id: Date.now(), text: text });
+            saveHistory();
+            renderHistory();
+        }
+
+        function saveHistory() {
+            localStorage.setItem('saved_history_items', JSON.stringify(historyItems));
+        }
+
+        function renderHistory() {
+            historyListEl.innerHTML = '';
+            if (historyItems.length === 0) {
+                historyListEl.innerHTML = '<div style="font-size:12px; color:#888;">無紀錄 (No history)</div>';
+                return;
+            }
+
+            historyItems.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.innerHTML = `
+                    <input type="checkbox" data-id="${item.id}">
+                    <span class="history-text" onclick="loadHistoryToInput('${escapeHtml(item.text)}')">${escapeHtml(item.text)}</span>
+                `;
+                historyListEl.appendChild(div);
+            });
+        }
+
+        function loadHistoryToInput(text) {
+            input.value = text;
+        }
+
+        function mergeSelectedHistory() {
+            const checkboxes = historyListEl.querySelectorAll('input[type="checkbox"]:checked');
+            const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.getAttribute('data-id')));
+
+            if (selectedIds.length < 2) {
+                alert("請至少選擇兩個紀錄進行合併");
+                return;
+            }
+
+            const selectedItems = historyItems.filter(item => selectedIds.includes(item.id));
+            const mergedText = selectedItems.map(item => item.text).join(" ");
+
+            addHistoryItem(mergedText);
+            input.value = mergedText;
+        }
+
+        function deleteSelectedHistory() {
+            const checkboxes = historyListEl.querySelectorAll('input[type="checkbox"]:checked');
+            const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.getAttribute('data-id')));
+
+            if (selectedIds.length === 0) {
+                alert("請選擇要刪除的紀錄");
+                return;
+            }
+
+            historyItems = historyItems.filter(item => !selectedIds.includes(item.id));
+            saveHistory();
+            renderHistory();
+        }
+
+        function clearText() {
+            input.value = '';
+            input.focus();
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+        }
+    </script>
 </body>
 </html>
