@@ -487,13 +487,16 @@
         </div>
 
         <div class="setting-section">
-            <h3>廣東話語音專用過濾 (HK Cantonese Filter)</h3>
+            <h3>廣東話語音過濾 (HK Cantonese Filter)</h3>
             <select id="filter-select" class="select-theme">
-                <option value="hk_clean">廣東話口語淨化 (Clean Spoken Cantonese)</option>
-                <option value="hk_to_written">廣東話轉書面語 (Convert to Formal Written Chinese)</option>
-                <option value="voice_stutter">去除語音重複/口吃 (Fix Stutters & Duplicates)</option>
-                <option value="none">不使用過濾器 (No Advanced Filter)</option>
+                <option value="hk_clean">廣東話口語（清除口吃 / 「即係」贅字）</option>
+                <option value="hk_to_written">轉為標準書面語（適合正式訊息 / 電郵）</option>
+                <option value="voice_stutter">僅修復重複字詞（保留完全原音）</option>
+                <option value="none">不使用過濾器 (No Filter)</option>
             </select>
+            <span style="font-size:11px; opacity:0.75; margin-top:2px;">
+                💡 提示：「轉為標準書面語」已包含贅字與口吃修復功能。
+            </span>
         </div>
 
         <div class="setting-section">
@@ -554,6 +557,8 @@
         const rewriteBtn = document.getElementById('rewrite-btn');
         const historyListEl = document.getElementById('history-list');
         const toastEl = document.getElementById('toast');
+        const toneSelect = document.getElementById('tone-select');
+        const filterSelect = document.getElementById('filter-select');
 
         const TONE_BASE = {
             preserve: "Keep original words and intent intact while fixing typos, missing punctuation, and minor awkwardness.",
@@ -618,7 +623,26 @@
 
             updateFontCSS();
             renderHistory();
+
+            // Setup Approach 1 Dynamic UI Conflict Resolution
+            setupConflictResolution();
         });
+
+        function setupConflictResolution() {
+            filterSelect.addEventListener('change', () => {
+                if (filterSelect.value === 'hk_to_written' && toneSelect.value === 'preserve') {
+                    toneSelect.value = 'polish';
+                    showToast("💡 已自動切換至「修飾流暢」以配合書面語轉換");
+                }
+            });
+
+            toneSelect.addEventListener('change', () => {
+                if (toneSelect.value === 'preserve' && filterSelect.value === 'hk_to_written') {
+                    filterSelect.value = 'hk_clean';
+                    showToast("💡 已自動切換至「廣東話口語」以保留原始用語");
+                }
+            });
+        }
 
         input.addEventListener('focus', handleInitialClear);
         input.addEventListener('input', handleInitialClear);
@@ -719,8 +743,8 @@
         }
 
         function constructSystemPrompt() {
-            const toneKey = document.getElementById('tone-select').value;
-            const filterKey = document.getElementById('filter-select').value;
+            const toneKey = toneSelect.value;
+            const filterKey = filterSelect.value;
             const pointFormKey = document.getElementById('pointform-select').value;
 
             return `
