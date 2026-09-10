@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="zh">
 <head>
@@ -6,34 +8,35 @@
     <title>Warm Reader - Communication Box</title>
     <style>
         :root {
-            /* Warm Color Palette */
+            /* Dynamic Theme Variables - Dark Amber (Default) */
             --paper-bg: #1C1A17; 
             --paper-line-color: rgba(226, 157, 50, 0.18); 
             --margin-line-color: rgba(224, 109, 83, 0.35); 
             --text-color: #FFD166; 
             --ui-text: #F4EAD4; 
             --card-bg: rgba(36, 32, 28, 0.92);
+            --punc-btn-bg: linear-gradient(145deg, #3A332C, #2A241F);
+            --punc-text-color: #FFD166;
             --btn-warm-primary: linear-gradient(145deg, #E06D53, #C85237); 
             --btn-warm-secondary: linear-gradient(145deg, #4A423A, #36302A); 
-            --btn-warm-punc: linear-gradient(145deg, #3A332C, #2A241F);
             --border-color: rgba(226, 157, 50, 0.2);
             --chars-per-row: 8;
             --line-height-px: 64px;
         }
 
-        /* High-Contrast Color Themes */
-        body.theme-warm-amber {
-            --paper-bg: #1C1A17;
-            --text-color: #FFD166;
-            --ui-text: #F4EAD4;
-            --paper-line-color: rgba(226, 157, 50, 0.18);
-        }
+        /* Theme: Aged Parchment */
         body.theme-aged-parchment {
             --paper-bg: #2C261E;
             --text-color: #FFE8B6;
             --ui-text: #FFF8E7;
             --paper-line-color: rgba(255, 220, 150, 0.15);
+            --card-bg: rgba(44, 38, 30, 0.92);
+            --punc-btn-bg: linear-gradient(145deg, #42382C, #2F271E);
+            --punc-text-color: #FFE8B6;
+            --btn-warm-secondary: linear-gradient(145deg, #4A4034, #362E25);
         }
+
+        /* Theme: Cream Paper (Light Mode Fix) */
         body.theme-cream-paper {
             --paper-bg: #FFF8EB;
             --text-color: #2A1F13;
@@ -41,7 +44,11 @@
             --paper-line-color: rgba(180, 130, 60, 0.2);
             --margin-line-color: rgba(200, 70, 50, 0.3);
             --card-bg: rgba(245, 235, 218, 0.95);
-            --btn-warm-secondary: linear-gradient(145deg, #EADBC8, #D8C7B0);
+            --punc-btn-bg: linear-gradient(145deg, #EADBC8, #D5C3A9);
+            --punc-text-color: #2A1F13;
+            --btn-warm-primary: linear-gradient(145deg, #D95338, #B83A20);
+            --btn-warm-secondary: linear-gradient(145deg, #E2D1BC, #C8B59E);
+            --border-color: rgba(180, 130, 60, 0.3);
         }
 
         * {
@@ -54,7 +61,7 @@
             min-height: 100vh;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Microsoft JhengHei", sans-serif;
             background-color: var(--paper-bg);
-            /* Lined Notebook Pattern */
+            /* Notebook Lined Paper Effect */
             background-image: 
                 linear-gradient(90deg, transparent 85px, var(--margin-line-color) 85px, var(--margin-line-color) 87px, transparent 87px),
                 linear-gradient(var(--paper-line-color) 1.5px, transparent 1.5px);
@@ -68,7 +75,7 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        /* Warm 3D Tactile Buttons */
+        /* 3D Tactile Buttons */
         .btn-3d {
             border: 1px solid var(--border-color);
             border-radius: 10px;
@@ -78,28 +85,25 @@
             outline: none;
             user-select: none;
             box-shadow: 
-                0 4px 0 rgba(0, 0, 0, 0.4),
-                0 6px 10px rgba(0, 0, 0, 0.25),
+                0 4px 0 rgba(0, 0, 0, 0.25),
+                0 6px 10px rgba(0, 0, 0, 0.15),
                 inset 0 1px 1px rgba(255, 255, 255, 0.2);
             transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.2s;
         }
 
         .btn-3d:hover {
-            filter: brightness(1.1);
+            filter: brightness(1.08);
             transform: translateY(-1px);
-            box-shadow: 
-                0 5px 0 rgba(0, 0, 0, 0.4),
-                0 8px 14px rgba(0, 0, 0, 0.3);
         }
 
         .btn-3d:active {
             transform: translateY(3px);
             box-shadow: 
-                0 1px 0 rgba(0, 0, 0, 0.4),
-                inset 0 2px 4px rgba(0, 0, 0, 0.5);
+                0 1px 0 rgba(0, 0, 0, 0.2),
+                inset 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        /* Expanded Left Floating Sidebar */
+        /* Left Floating Sidebar */
         .punctuation-sidebar {
             position: fixed;
             top: 50%;
@@ -118,7 +122,7 @@
             z-index: 1000;
             transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
         }
 
         .punctuation-sidebar.collapsed {
@@ -153,7 +157,6 @@
             pointer-events: none;
         }
 
-        /* Main Actions in Sidebar */
         .btn-sidebar-action {
             width: 100%;
             padding: 10px 2px;
@@ -194,13 +197,14 @@
             width: 48px;
             height: 44px;
             font-size: 20px;
-            background: var(--btn-warm-punc);
+            background: var(--punc-btn-bg);
+            color: var(--punc-text-color);
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* Right Settings Drawer */
+        /* Right Settings & History Drawer */
         .right-sidebar {
             position: fixed;
             top: 0;
@@ -218,7 +222,7 @@
             transform: translateX(100%);
             transition: transform 0.3s ease-in-out;
             overflow-y: auto;
-            box-shadow: -8px 0 30px rgba(0, 0, 0, 0.6);
+            box-shadow: -8px 0 30px rgba(0, 0, 0, 0.4);
         }
 
         .right-sidebar.open {
@@ -245,14 +249,14 @@
             font-size: 15px;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 4px;
-            color: #FFD166;
+            color: var(--ui-text);
         }
 
         .font-adjuster {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(0,0,0,0.25);
+            background: rgba(0,0,0,0.1);
             padding: 8px 12px;
             border-radius: 8px;
         }
@@ -267,7 +271,7 @@
         .select-theme, .input-api {
             width: 100%;
             padding: 10px;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.1);
             border: 1px solid var(--border-color);
             color: var(--ui-text);
             border-radius: 8px;
@@ -301,7 +305,7 @@
             display: flex;
             align-items: flex-start;
             gap: 8px;
-            background: rgba(0,0,0,0.25);
+            background: rgba(0,0,0,0.08);
             padding: 10px;
             border-radius: 8px;
             font-size: 14px;
@@ -326,11 +330,10 @@
             flex-grow: 1;
         }
 
-        /* On-Screen Instruction Header */
         .instruction-banner {
-            font-size: 16px;
-            color: rgba(244, 234, 212, 0.7);
-            background: rgba(36, 32, 28, 0.4);
+            font-size: 15px;
+            color: var(--ui-text);
+            background: var(--card-bg);
             border: 1px dashed var(--border-color);
             padding: 8px 16px;
             border-radius: 8px;
@@ -341,7 +344,6 @@
             gap: 8px;
         }
 
-        /* Text Area Shifted to Row 2 */
         #big-text-input {
             width: 100%;
             flex-grow: 1;
@@ -361,18 +363,38 @@
         }
 
         #big-text-input::placeholder {
-            color: rgba(255, 209, 102, 0.35);
+            color: var(--text-color);
+            opacity: 0.4;
+        }
+
+        /* Toast Banner Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(184, 45, 30, 0.92);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: none;
+            z-index: 2000;
+            text-align: center;
         }
     </style>
 </head>
 <body class="theme-warm-amber">
 
-    <!-- Left Floating Sidebar (Actions + Punctuation) -->
+    <!-- Toast Notification Banner for Errors -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Left Floating Sidebar -->
     <aside id="left-sidebar" class="punctuation-sidebar">
         <button class="sidebar-toggle-btn" onclick="toggleLeftSidebar()" title="Collapse/Expand">◄</button>
         
         <div class="sidebar-content">
-            <!-- Action Buttons Above Punctuation -->
             <button id="rewrite-btn" class="btn-3d btn-sidebar-action btn-sidebar-rewrite" onclick="handleRewrite()">
                 AI 重寫<br><span style="font-size:10px; opacity:0.8;">Rewrite</span>
             </button>
@@ -382,7 +404,6 @@
 
             <div class="sidebar-divider"></div>
 
-            <!-- Punctuation Group -->
             <div class="punc-group">
                 <button class="btn-3d btn-punc" onclick="insertPunctuation('，')">，</button>
                 <button class="btn-3d btn-punc" onclick="insertPunctuation('。')">。</button>
@@ -397,7 +418,6 @@
         </div>
     </aside>
 
-    <!-- Right Drawer Toggle -->
     <button class="btn-3d right-toggle-btn" onclick="toggleRightSidebar()">⚙ 設定 Settings</button>
 
     <!-- Right Settings & History Sidebar -->
@@ -440,7 +460,6 @@
 
     <!-- Main Workspace -->
     <main class="main-container">
-        <!-- Short Instruction Banner -->
         <div class="instruction-banner">
             💡 <span>點擊下方輸入框直接打字，側邊欄可插入標點符號與 AI 重寫。</span>
         </div>
@@ -449,13 +468,13 @@
     </main>
 
     <script>
-        // Updated Worker Proxy Endpoint
         const WORKER_URL = "https://openrouter-proxy.tinycarton.workers.dev/";
 
         const input = document.getElementById('big-text-input');
         const apiKeyInput = document.getElementById('api-key');
         const rewriteBtn = document.getElementById('rewrite-btn');
         const historyListEl = document.getElementById('history-list');
+        const toastEl = document.getElementById('toast');
 
         let charsPerRow = parseInt(localStorage.getItem('saved_chars_per_row')) || 8;
         let historyItems = JSON.parse(localStorage.getItem('saved_history_items')) || [];
@@ -474,7 +493,6 @@
             renderHistory();
         });
 
-        // Auto-clear main screen on first user interaction
         input.addEventListener('focus', handleInitialClear);
         input.addEventListener('input', handleInitialClear);
 
@@ -490,6 +508,12 @@
         apiKeyInput.addEventListener('change', () => {
             localStorage.setItem('openrouter_key', apiKeyInput.value.trim());
         });
+
+        function showToast(msg) {
+            toastEl.textContent = msg;
+            toastEl.style.display = 'block';
+            setTimeout(() => { toastEl.style.display = 'none'; }, 4000);
+        }
 
         function toggleLeftSidebar() {
             document.getElementById('left-sidebar').classList.toggle('collapsed');
@@ -533,7 +557,7 @@
             if (!rawText) return;
 
             if (!apiKey) {
-                alert("請在右側設定欄輸入 OpenRouter API Key");
+                showToast("請在右側設定欄輸入 OpenRouter API Key");
                 toggleRightSidebar();
                 return;
             }
@@ -547,23 +571,28 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         text: rawText,
-                        apiKey: apiKey
+                        apiKey: apiKey,
+                        systemPrompt: "You are a communication assistant helping elderly users clearly format and rewrite text. Clean up grammar, fix typos, and preserve original intent without refusing user text unless strictly harmful."
                     })
                 });
 
                 const data = await response.json();
 
-                if (data.choices && data.choices[0]) {
+                if (data.choices && data.choices[0] && data.choices[0].message) {
                     const rewritten = data.choices[0].message.content.trim();
-                    input.value = rewritten;
-                    addHistoryItem(rewritten);
-                } else if (data.error) {
-                    alert("Error: " + (data.error.message || JSON.stringify(data.error)));
+                    
+                    if (rewritten.toLowerCase().includes("server busy") || rewritten.startsWith("unchanged :")) {
+                        showToast("⚠️ 重寫失敗：AI 未有及時回應，您的原始文字已保留。");
+                    } else {
+                        input.value = rewritten;
+                        addHistoryItem(rewritten);
+                    }
                 } else {
-                    alert("無法重寫文字，請檢查 API Key。");
+                    const errDetail = data.error ? (data.error.message || JSON.stringify(data.error)) : "無法重寫文字";
+                    showToast("⚠️ 重寫失敗: " + errDetail + " (原始文字已保留)");
                 }
             } catch (err) {
-                alert("網路錯誤：請檢查 Cloudflare Worker 網址。");
+                showToast("⚠️ 網路錯誤或 Worker 無法連線，原始文字已保留。");
             } finally {
                 rewriteBtn.disabled = false;
                 rewriteBtn.innerHTML = "AI 重寫<br><span style='font-size:10px; opacity:0.8;'>Rewrite</span>";
@@ -584,7 +613,7 @@
         function renderHistory() {
             historyListEl.innerHTML = '';
             if (historyItems.length === 0) {
-                historyListEl.innerHTML = '<div style="font-size:12px; color:#A09080;">無紀錄 (No history)</div>';
+                historyListEl.innerHTML = '<div style="font-size:12px; opacity:0.6;">無紀錄 (No history)</div>';
                 return;
             }
 
@@ -609,7 +638,7 @@
             const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.getAttribute('data-id')));
 
             if (selectedIds.length < 2) {
-                alert("請至少選擇兩個紀錄進行合併");
+                showToast("請至少選擇兩個紀錄進行合併");
                 return;
             }
 
@@ -626,7 +655,7 @@
             const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.getAttribute('data-id')));
 
             if (selectedIds.length === 0) {
-                alert("請選擇要刪除的紀錄");
+                showToast("請選擇要刪除的紀錄");
                 return;
             }
 
