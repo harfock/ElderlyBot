@@ -7,18 +7,18 @@
     <style>
         :root {
             /* Warm Color Palette */
-            --paper-bg: #1C1A17; /* Deep warm charcoal */
-            --paper-line-color: rgba(226, 157, 50, 0.15); /* Soft amber line */
-            --margin-line-color: rgba(224, 109, 83, 0.35); /* Warm terracotta margin */
-            --text-color: #FFD166; /* Warm golden amber for big text */
-            --ui-text: #F4EAD4; /* Cream white for UI labels */
+            --paper-bg: #1C1A17; 
+            --paper-line-color: rgba(226, 157, 50, 0.18); 
+            --margin-line-color: rgba(224, 109, 83, 0.35); 
+            --text-color: #FFD166; 
+            --ui-text: #F4EAD4; 
             --card-bg: rgba(36, 32, 28, 0.92);
-            --btn-warm-primary: linear-gradient(145deg, #E06D53, #C85237); /* Terracotta */
-            --btn-warm-secondary: linear-gradient(145deg, #4A423A, #36302A); /* Dark wood */
+            --btn-warm-primary: linear-gradient(145deg, #E06D53, #C85237); 
+            --btn-warm-secondary: linear-gradient(145deg, #4A423A, #36302A); 
             --btn-warm-punc: linear-gradient(145deg, #3A332C, #2A241F);
             --border-color: rgba(226, 157, 50, 0.2);
             --chars-per-row: 8;
-            --line-height-px: 56px;
+            --line-height-px: 64px;
         }
 
         /* High-Contrast Color Themes */
@@ -35,7 +35,7 @@
             --paper-line-color: rgba(255, 220, 150, 0.15);
         }
         body.theme-cream-paper {
-            --paper-bg: #FFF8EB; /* Warm light cream for daylight */
+            --paper-bg: #FFF8EB;
             --text-color: #2A1F13;
             --ui-text: #2A1F13;
             --paper-line-color: rgba(180, 130, 60, 0.2);
@@ -54,16 +54,16 @@
             min-height: 100vh;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Microsoft JhengHei", sans-serif;
             background-color: var(--paper-bg);
-            /* Warm Lined Paper Grid */
+            /* Lined Notebook Pattern */
             background-image: 
-                linear-gradient(90deg, transparent 55px, var(--margin-line-color) 55px, var(--margin-line-color) 57px, transparent 57px),
+                linear-gradient(90deg, transparent 85px, var(--margin-line-color) 85px, var(--margin-line-color) 87px, transparent 87px),
                 linear-gradient(var(--paper-line-color) 1.5px, transparent 1.5px);
             background-size: 100% 100%, 100% var(--line-height-px);
-            background-position: 0 0, 0 12px;
+            background-position: 0 0, 0 16px;
             color: var(--ui-text);
             display: flex;
             flex-direction: column;
-            padding: 20px 80px 20px 75px; /* Generous padding to prevent layout overlap */
+            padding: 20px 80px 80px 105px; 
             overflow-x: hidden;
             transition: background-color 0.3s, color 0.3s;
         }
@@ -99,18 +99,18 @@
                 inset 0 2px 4px rgba(0, 0, 0, 0.5);
         }
 
-        /* Left Sidebar: Punctuation */
+        /* Expanded Left Floating Sidebar */
         .punctuation-sidebar {
             position: fixed;
             top: 50%;
             left: 10px;
             transform: translateY(-50%);
-            width: 56px;
+            width: 80px;
             background: var(--card-bg);
             backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            padding: 10px 0;
+            padding: 10px 6px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -139,7 +139,7 @@
             transform: rotate(180deg);
         }
 
-        .punc-group {
+        .sidebar-content {
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -148,22 +148,59 @@
             transition: opacity 0.2s;
         }
 
-        .punctuation-sidebar.collapsed .punc-group {
+        .punctuation-sidebar.collapsed .sidebar-content {
             opacity: 0;
             pointer-events: none;
         }
 
+        /* Main Actions in Sidebar */
+        .btn-sidebar-action {
+            width: 100%;
+            padding: 10px 2px;
+            font-size: 13px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.2;
+            text-align: center;
+        }
+
+        .btn-sidebar-rewrite {
+            background: var(--btn-warm-primary);
+            color: #FFF8E7;
+        }
+
+        .btn-sidebar-clear {
+            background: var(--btn-warm-secondary);
+        }
+
+        .sidebar-divider {
+            width: 80%;
+            height: 1px;
+            background: var(--border-color);
+            margin: 4px 0;
+        }
+
+        .punc-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 100%;
+            align-items: center;
+        }
+
         .btn-punc {
-            width: 40px;
-            height: 40px;
-            font-size: 19px;
+            width: 48px;
+            height: 44px;
+            font-size: 20px;
             background: var(--btn-warm-punc);
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* Right Settings & History Drawer */
+        /* Right Settings Drawer */
         .right-sidebar {
             position: fixed;
             top: 0;
@@ -287,39 +324,33 @@
             display: flex;
             flex-direction: column;
             flex-grow: 1;
-            gap: 16px;
         }
 
-        .controls {
+        /* On-Screen Instruction Header */
+        .instruction-banner {
+            font-size: 16px;
+            color: rgba(244, 234, 212, 0.7);
+            background: rgba(36, 32, 28, 0.4);
+            border: 1px dashed var(--border-color);
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            line-height: 1.5;
             display: flex;
-            gap: 12px;
+            align-items: center;
+            gap: 8px;
         }
 
-        .btn-action {
-            flex: 1;
-            padding: 14px;
-            font-size: 17px;
-        }
-
-        .btn-rewrite {
-            background: var(--btn-warm-primary);
-            color: #FFF8E7;
-        }
-
-        .btn-clear {
-            flex: 0.25;
-            background: var(--btn-warm-secondary);
-        }
-
-        /* Text Area Alignment Fixes */
+        /* Text Area Shifted to Row 2 */
         #big-text-input {
             width: 100%;
             flex-grow: 1;
             background: transparent;
             color: var(--text-color);
             border: none;
-            padding: 8px 0 0 0; /* Aligns text cleanly onto top paper line */
-            font-size: calc((100vw - 160px) / var(--chars-per-row));
+            padding: 0;
+            margin-top: calc(var(--line-height-px) * 0.1);
+            font-size: calc((100vw - 190px) / var(--chars-per-row));
             line-height: var(--line-height-px);
             resize: none;
             outline: none;
@@ -330,25 +361,39 @@
         }
 
         #big-text-input::placeholder {
-            color: rgba(255, 209, 102, 0.3);
+            color: rgba(255, 209, 102, 0.35);
         }
     </style>
 </head>
 <body class="theme-warm-amber">
 
-    <!-- Left Floating Punctuation Sidebar -->
+    <!-- Left Floating Sidebar (Actions + Punctuation) -->
     <aside id="left-sidebar" class="punctuation-sidebar">
         <button class="sidebar-toggle-btn" onclick="toggleLeftSidebar()" title="Collapse/Expand">◄</button>
-        <div class="punc-group">
-            <button class="btn-3d btn-punc" onclick="insertPunctuation('，')">，</button>
-            <button class="btn-3d btn-punc" onclick="insertPunctuation('。')">。</button>
-            <button class="btn-3d btn-punc" onclick="insertPunctuation('？')">？</button>
-            <button class="btn-3d btn-punc" onclick="insertPunctuation('！')">！</button>
-            <button class="btn-3d btn-punc" onclick="insertPunctuation('：')">：</button>
-            <button class="btn-3d btn-punc" onclick="insertPunctuation('；')">；</button>
-            <button class="btn-3d btn-punc" onclick="insertPunctuation('「')">「</button>
-            <button class="btn-3d btn-punc" onclick="insertPunctuation('」')">」</button>
-            <button class="btn-3d btn-punc" onclick="insertPunctuation('、')">、</button>
+        
+        <div class="sidebar-content">
+            <!-- Action Buttons Above Punctuation -->
+            <button id="rewrite-btn" class="btn-3d btn-sidebar-action btn-sidebar-rewrite" onclick="handleRewrite()">
+                AI 重寫<br><span style="font-size:10px; opacity:0.8;">Rewrite</span>
+            </button>
+            <button class="btn-3d btn-sidebar-action btn-sidebar-clear" onclick="clearText()">
+                清除<br><span style="font-size:10px; opacity:0.8;">Clear</span>
+            </button>
+
+            <div class="sidebar-divider"></div>
+
+            <!-- Punctuation Group -->
+            <div class="punc-group">
+                <button class="btn-3d btn-punc" onclick="insertPunctuation('，')">，</button>
+                <button class="btn-3d btn-punc" onclick="insertPunctuation('。')">。</button>
+                <button class="btn-3d btn-punc" onclick="insertPunctuation('？')">？</button>
+                <button class="btn-3d btn-punc" onclick="insertPunctuation('！')">！</button>
+                <button class="btn-3d btn-punc" onclick="insertPunctuation('：')">：</button>
+                <button class="btn-3d btn-punc" onclick="insertPunctuation('；')">；</button>
+                <button class="btn-3d btn-punc" onclick="insertPunctuation('「')">「</button>
+                <button class="btn-3d btn-punc" onclick="insertPunctuation('」')">」</button>
+                <button class="btn-3d btn-punc" onclick="insertPunctuation('、')">、</button>
+            </div>
         </div>
     </aside>
 
@@ -395,15 +440,16 @@
 
     <!-- Main Workspace -->
     <main class="main-container">
-        <div class="controls">
-            <button id="rewrite-btn" class="btn-3d btn-action btn-rewrite" onclick="handleRewrite()">AI 重寫 Rewrite</button>
-            <button class="btn-3d btn-action btn-clear" onclick="clearText()">清除 Clear</button>
+        <!-- Short Instruction Banner -->
+        <div class="instruction-banner">
+            💡 <span>點擊下方輸入框直接打字，側邊欄可插入標點符號與 AI 重寫。</span>
         </div>
 
         <textarea id="big-text-input" placeholder="請在此輸入文字..."></textarea>
     </main>
 
     <script>
+        // Updated Worker Proxy Endpoint
         const WORKER_URL = "https://openrouter-proxy.tinycarton.workers.dev/";
 
         const input = document.getElementById('big-text-input');
@@ -413,6 +459,7 @@
 
         let charsPerRow = parseInt(localStorage.getItem('saved_chars_per_row')) || 8;
         let historyItems = JSON.parse(localStorage.getItem('saved_history_items')) || [];
+        let isFirstInput = true;
 
         document.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem('openrouter_key')) {
@@ -426,6 +473,19 @@
             updateFontCSS();
             renderHistory();
         });
+
+        // Auto-clear main screen on first user interaction
+        input.addEventListener('focus', handleInitialClear);
+        input.addEventListener('input', handleInitialClear);
+
+        function handleInitialClear() {
+            if (isFirstInput) {
+                isFirstInput = false;
+                if (input.value === "請在此輸入文字...") {
+                    input.value = "";
+                }
+            }
+        }
 
         apiKeyInput.addEventListener('change', () => {
             localStorage.setItem('openrouter_key', apiKeyInput.value.trim());
@@ -456,6 +516,7 @@
         }
 
         function insertPunctuation(char) {
+            handleInitialClear();
             input.focus();
             const start = input.selectionStart;
             const end = input.selectionEnd;
@@ -478,7 +539,7 @@
             }
 
             rewriteBtn.disabled = true;
-            rewriteBtn.textContent = "重寫中 Rewriting...";
+            rewriteBtn.innerHTML = "重寫中...<br><span style='font-size:10px;'>Rewriting</span>";
 
             try {
                 const response = await fetch(WORKER_URL, {
@@ -505,7 +566,7 @@
                 alert("網路錯誤：請檢查 Cloudflare Worker 網址。");
             } finally {
                 rewriteBtn.disabled = false;
-                rewriteBtn.textContent = "AI 重寫 Rewrite";
+                rewriteBtn.innerHTML = "AI 重寫<br><span style='font-size:10px; opacity:0.8;'>Rewrite</span>";
             }
         }
 
@@ -539,6 +600,7 @@
         }
 
         function loadHistoryToInput(text) {
+            isFirstInput = false;
             input.value = text;
         }
 
@@ -555,6 +617,7 @@
             const mergedText = selectedItems.map(item => item.text).join(" ");
 
             addHistoryItem(mergedText);
+            isFirstInput = false;
             input.value = mergedText;
         }
 
@@ -573,6 +636,7 @@
         }
 
         function clearText() {
+            isFirstInput = false;
             input.value = '';
             input.focus();
         }
