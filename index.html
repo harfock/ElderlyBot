@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>傳譯 - HK Communication & Voice Assistant</title>
 
-    <!-- Web App & Apple Home Screen Icon ("傳譯") -->
     <link rel="apple-touch-icon" href="elderlybotIcon.png">   
     <meta name="apple-mobile-web-app-title" content="傳譯">
     <meta name="apple-mobile-web-app-capable" content="yes">
 
     <style>
         :root {
-            /* Default Theme: Warm Cream Daylight (柔和奶油白) */
             --paper-bg: #FFF8EB;
             --text-color: #2A1F13;
             --ui-text: #2A1F13;
@@ -29,7 +27,6 @@
             --line-height-px: 78px;
         }
 
-        /* Theme: Light Blue (淺藍) */
         body.theme-light-blue {
             --paper-bg: #EEF5FC;
             --text-color: #12263F;
@@ -45,7 +42,6 @@
             --border-color: rgba(60, 120, 180, 0.35);
         }
 
-        /* Theme: Light Pink (淺粉紅) */
         body.theme-light-pink {
             --paper-bg: #FCF0F3;
             --text-color: #3B1825;
@@ -114,7 +110,6 @@
             box-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
         }
 
-        /* Top Action Buttons Bar */
         .top-nav-bar {
             position: fixed;
             top: 12px;
@@ -135,7 +130,6 @@
             color: #FFFFFF;
         }
 
-        /* Left Sidebar */
         .punctuation-sidebar {
             position: fixed;
             top: 50%;
@@ -219,14 +213,14 @@
             justify-content: center;
         }
 
-        /* Drawers (Settings & History) */
+        /* Drawers Responsive Sizing */
         .drawer {
             position: fixed;
             top: 0;
             right: 0;
             bottom: 0;
-            width: 280px;
-            max-width: 80%;
+            width: 320px;
+            max-width: 85vw;
             background: var(--card-bg);
             backdrop-filter: blur(16px);
             border-left: 1px solid var(--border-color);
@@ -323,7 +317,6 @@
             outline: none;
         }
 
-        /* History Drawer Specifics */
         .history-toolbar {
             display: flex;
             gap: 6px;
@@ -419,7 +412,6 @@
             font-size: 12px;
         }
 
-        /* Main Canvas Workspace */
         .main-container {
             display: flex;
             flex-direction: column;
@@ -498,12 +490,25 @@
             z-index: 2000;
         }
 
-        @media (max-width: 600px) {
+        /* Phone Portrait Media Query Fix */
+        @media screen and (max-width: 600px) and (orientation: portrait) {
             body { padding: 10px 10px 10px 68px; }
             .punctuation-sidebar { left: 4px; width: 58px; }
             .btn-punc { width: 36px; font-size: 14px; }
             .instruction-banner { margin-right: 0; margin-top: 42px; font-size: 11px; }
-            .drawer { width: 80%; }
+            .drawer { 
+                width: 270px;
+                max-width: 78vw;
+            }
+        }
+
+        /* Phone Landscape Media Query */
+        @media screen and (max-height: 500px) and (orientation: landscape) {
+            .drawer { 
+                width: 300px;
+                max-width: 45vw;
+                padding-top: 45px;
+            }
         }
     </style>
 </head>
@@ -511,14 +516,12 @@
 
     <div id="toast" class="toast"></div>
 
-    <!-- Top Action Nav -->
     <div class="top-nav-bar">
         <button class="btn-3d top-btn top-btn-save" onclick="handleManualSave()">💾 儲存 Save</button>
         <button class="btn-3d top-btn" onclick="toggleDrawer('history-drawer')">📜 歷史 History</button>
         <button class="btn-3d top-btn" onclick="toggleDrawer('settings-drawer')">⚙ 設定 Settings</button>
     </div>
 
-    <!-- Left Floating Sidebar -->
     <aside id="left-sidebar" class="punctuation-sidebar">
         <button class="sidebar-toggle-btn" onclick="toggleLeftSidebar()">◄</button>
         <div class="sidebar-content">
@@ -549,7 +552,6 @@
         </div>
     </aside>
 
-    <!-- Settings Drawer -->
     <aside id="settings-drawer" class="drawer">
         <div class="setting-section">
             <h3>API 金鑰 (API Key)</h3>
@@ -617,7 +619,6 @@
         </div>
     </aside>
 
-    <!-- History Drawer -->
     <aside id="history-drawer" class="drawer">
         <div class="setting-section" style="flex-grow: 1; display: flex; flex-direction: column;">
             <h3>歷史紀錄 (History)</h3>
@@ -640,7 +641,6 @@
         </div>
     </aside>
 
-    <!-- Main Workspace Canvas -->
     <main class="main-container" onclick="handleCanvasAreaClick(event)">
         <div class="instruction-banner">
             💡 點擊下方輸入框輸入文字。支援多頁翻頁/手勢滑動切換。
@@ -675,7 +675,7 @@
         let pastedItemIds = new Set();
 
         let isFirstInput = true;
-        let histSelectionMode = null; // 'merge' or 'delete'
+        let histSelectionMode = null;
         let histCurrentPage = 1;
         const HIST_PER_PAGE = 5;
 
