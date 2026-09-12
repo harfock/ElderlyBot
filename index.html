@@ -2,51 +2,61 @@
 <html lang="zh-HK">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warm Reader - HK Communication & Voice Assistant</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>傳譯 - HK Communication & Voice Assistant</title>
+
+    <!-- Web App & Apple Home Screen Icon ("傳譯") -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180' width='180' height='180'><rect width='180' height='180' rx='40' fill='%238E1B38'/><text x='50%25' y='55%25' dominant-baseline='central' text-anchor='middle' fill='%23FFF8EB' font-size='82' font-family='sans-serif' font-weight='bold'>傳譯</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180' width='180' height='180'><rect width='180' height='180' rx='40' fill='%238E1B38'/><text x='50%25' y='55%25' dominant-baseline='central' text-anchor='middle' fill='%23FFF8EB' font-size='82' font-family='sans-serif' font-weight='bold'>傳譯</text></svg>">
+    <meta name="apple-mobile-web-app-title" content="傳譯">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
     <style>
         :root {
-            /* Dynamic Theme Variables - Dark Amber (Default) */
-            --paper-bg: #1C1A17; 
-            --paper-line-color: rgba(226, 157, 50, 0.18); 
-            --margin-line-color: rgba(224, 109, 83, 0.35); 
-            --text-color: #FFD166; 
-            --ui-text: #F4EAD4; 
-            --card-bg: rgba(36, 32, 28, 0.92);
-            --punc-btn-bg: linear-gradient(145deg, #3A332C, #2A241F);
-            --punc-text-color: #FFD166;
-            --btn-warm-primary: linear-gradient(145deg, #E06D53, #C85237); 
-            --btn-warm-secondary: linear-gradient(145deg, #4A423A, #36302A); 
-            --border-color: rgba(226, 157, 50, 0.2);
-            --chars-per-row: 8;
-            --line-height-px: 64px;
-        }
-
-        /* Theme: Aged Parchment */
-        body.theme-aged-parchment {
-            --paper-bg: #2C261E;
-            --text-color: #FFE8B6;
-            --ui-text: #FFF8E7;
-            --paper-line-color: rgba(255, 220, 150, 0.15);
-            --card-bg: rgba(44, 38, 30, 0.92);
-            --punc-btn-bg: linear-gradient(145deg, #42382C, #2F271E);
-            --punc-text-color: #FFE8B6;
-            --btn-warm-secondary: linear-gradient(145deg, #4A4034, #362E25);
-        }
-
-        /* Theme: Cream Paper (Light Mode) */
-        body.theme-cream-paper {
+            /* Default Theme: Warm Cream Daylight (柔和奶油白) */
             --paper-bg: #FFF8EB;
             --text-color: #2A1F13;
             --ui-text: #2A1F13;
             --paper-line-color: rgba(180, 130, 60, 0.2);
-            --margin-line-color: rgba(200, 70, 50, 0.3);
-            --card-bg: rgba(245, 235, 218, 0.95);
+            --margin-line-color: rgba(200, 70, 50, 0.35);
+            --card-bg: rgba(252, 245, 232, 0.96);
             --punc-btn-bg: linear-gradient(145deg, #EADBC8, #D5C3A9);
             --punc-text-color: #2A1F13;
             --btn-warm-primary: linear-gradient(145deg, #D95338, #B83A20);
             --btn-warm-secondary: linear-gradient(145deg, #E2D1BC, #C8B59E);
-            --border-color: rgba(180, 130, 60, 0.3);
+            --border-color: rgba(180, 130, 60, 0.35);
+            --chars-per-row: 8;
+            --line-height-px: 58px;
+        }
+
+        /* Theme: Light Blue (淺藍) */
+        body.theme-light-blue {
+            --paper-bg: #EEF5FC;
+            --text-color: #12263F;
+            --ui-text: #12263F;
+            --paper-line-color: rgba(60, 120, 180, 0.2);
+            --margin-line-color: rgba(40, 100, 180, 0.35);
+            --card-bg: rgba(235, 243, 252, 0.96);
+            --punc-btn-bg: linear-gradient(145deg, #D0E1F5, #B5CFEC);
+            --punc-text-color: #12263F;
+            --btn-warm-primary: linear-gradient(145deg, #2B6CB0, #1C4ED8);
+            --btn-warm-secondary: linear-gradient(145deg, #C2D8F2, #A3C3E8);
+            --border-color: rgba(60, 120, 180, 0.35);
+        }
+
+        /* Theme: Light Pink (淺粉紅) */
+        body.theme-light-pink {
+            --paper-bg: #FCF0F3;
+            --text-color: #3B1825;
+            --ui-text: #3B1825;
+            --paper-line-color: rgba(200, 100, 130, 0.2);
+            --margin-line-color: rgba(210, 60, 100, 0.35);
+            --card-bg: rgba(253, 238, 242, 0.96);
+            --punc-btn-bg: linear-gradient(145deg, #F3D2DC, #E5B7C6);
+            --punc-text-color: #3B1825;
+            --btn-warm-primary: linear-gradient(145deg, #C53030, #9B1C1C);
+            --btn-warm-secondary: linear-gradient(145deg, #E9C6D1, #D8A9B8);
+            --border-color: rgba(200, 100, 130, 0.35);
         }
 
         * {
@@ -61,15 +71,15 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang HK", "PingFang TC", "Microsoft JhengHei", sans-serif;
             background-color: var(--paper-bg);
             background-image: 
-                linear-gradient(90deg, transparent 85px, var(--margin-line-color) 85px, var(--margin-line-color) 87px, transparent 87px),
+                linear-gradient(90deg, transparent 75px, var(--margin-line-color) 75px, var(--margin-line-color) 77px, transparent 77px),
                 linear-gradient(var(--paper-line-color) 1.5px, transparent 1.5px);
             background-size: 100% 100%, 100% var(--line-height-px);
             background-position: 0 0, 0 16px;
             color: var(--ui-text);
             display: flex;
             flex-direction: column;
-            padding: 20px 20px 20px 105px; 
-            overflow-x: hidden;
+            padding: 15px 15px 15px 90px;
+            overflow: hidden;
             transition: background-color 0.3s, color 0.3s;
         }
 
@@ -82,72 +92,69 @@
             outline: none;
             user-select: none;
             box-shadow: 
-                0 4px 0 rgba(0, 0, 0, 0.25),
-                0 6px 10px rgba(0, 0, 0, 0.15),
-                inset 0 1px 1px rgba(255, 255, 255, 0.2);
+                0 3px 0 rgba(0, 0, 0, 0.15),
+                0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.2s;
         }
 
         .btn-3d:hover {
-            filter: brightness(1.08);
+            filter: brightness(1.05);
             transform: translateY(-1px);
         }
 
         .btn-3d:active {
-            transform: translateY(3px);
-            box-shadow: 
-                0 1px 0 rgba(0, 0, 0, 0.2),
-                inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
         }
 
-        /* Left Sidebar - Responsive Auto-Fitting */
+        /* Top Action Buttons Bar */
+        .top-nav-bar {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            display: flex;
+            gap: 8px;
+            z-index: 1001;
+        }
+
+        .top-btn {
+            padding: 8px 12px;
+            background: var(--btn-warm-secondary);
+            font-size: 13px;
+        }
+
+        /* Left Sidebar */
         .punctuation-sidebar {
             position: fixed;
             top: 50%;
-            left: 10px;
+            left: 8px;
             transform: translateY(-50%);
-            width: 82px;
+            width: 72px;
             max-height: 96vh;
             max-height: 96dvh;
             background: var(--card-bg);
             backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 8px 4px;
+            border-radius: 14px;
+            padding: 6px 3px;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 4px;
             z-index: 1000;
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-y: auto;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
 
-        .punctuation-sidebar::-webkit-scrollbar {
-            width: 3px;
-        }
-        .punctuation-sidebar::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 4px;
-        }
-
-        .punctuation-sidebar.collapsed {
-            width: 24px;
-        }
+        .punctuation-sidebar.collapsed { width: 22px; }
 
         .sidebar-toggle-btn {
             background: transparent;
             border: none;
             color: var(--ui-text);
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             padding: 2px;
-            transition: transform 0.3s;
-        }
-
-        .punctuation-sidebar.collapsed .sidebar-toggle-btn {
-            transform: rotate(180deg);
         }
 
         .sidebar-content {
@@ -156,42 +163,29 @@
             gap: 4px;
             width: 100%;
             align-items: center;
-            transition: opacity 0.2s;
         }
 
-        .punctuation-sidebar.collapsed .sidebar-content {
-            opacity: 0;
-            pointer-events: none;
-        }
+        .punctuation-sidebar.collapsed .sidebar-content { display: none; }
 
         .btn-sidebar-action {
             width: 100%;
-            padding: 6px 2px;
-            font-size: 12px;
+            padding: 6px 1px;
+            font-size: 11px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             line-height: 1.1;
             text-align: center;
-            flex-shrink: 0;
         }
 
-        .btn-sidebar-rewrite {
-            background: var(--btn-warm-primary);
-            color: #FFF8E7;
-        }
-
-        .btn-sidebar-utility {
-            background: var(--btn-warm-secondary);
-        }
+        .btn-sidebar-rewrite { background: var(--btn-warm-primary); color: #FFF8EB; }
+        .btn-sidebar-utility { background: var(--btn-warm-secondary); }
 
         .sidebar-divider {
             width: 85%;
             height: 1px;
             background: var(--border-color);
             margin: 2px 0;
-            flex-shrink: 0;
         }
 
         .punc-group {
@@ -203,106 +197,122 @@
         }
 
         .btn-punc {
-            width: 48px;
-            height: 36px;
-            font-size: 17px;
+            width: 44px;
+            height: 32px;
+            font-size: 16px;
             background: var(--punc-btn-bg);
             color: var(--punc-text-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
         }
 
-        @media (max-height: 700px) {
-            .btn-sidebar-action {
-                padding: 4px 1px;
-                font-size: 11px;
-            }
-            .btn-punc {
-                height: 30px;
-                font-size: 15px;
-            }
-        }
-
-        /* Right Settings Sidebar */
-        .right-sidebar {
+        /* Drawers (Settings & History) */
+        .drawer {
             position: fixed;
             top: 0;
             right: 0;
             bottom: 0;
-            width: 320px;
+            width: clamp(260px, 80vw, 300px);
             background: var(--card-bg);
             backdrop-filter: blur(16px);
             border-left: 1px solid var(--border-color);
-            padding: 60px 18px 20px 18px;
+            padding: 55px 14px 16px 14px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
             z-index: 999;
             transform: translateX(100%);
-            transition: transform 0.3s ease-in-out;
+            transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-y: auto;
-            box-shadow: -8px 0 30px rgba(0, 0, 0, 0.4);
+            box-shadow: -6px 0 25px rgba(0, 0, 0, 0.18);
         }
 
-        .right-sidebar.open {
-            transform: translateX(0);
-        }
-
-        .right-toggle-btn {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            z-index: 1001;
-            padding: 10px 16px;
-            background: var(--btn-warm-secondary);
-            font-size: 14px;
-        }
+        .drawer.open { transform: translateX(0); }
 
         .setting-section {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
         .setting-section h3 {
-            font-size: 14px;
+            font-size: 13px;
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 4px;
-            color: var(--ui-text);
+            padding-bottom: 3px;
+        }
+
+        .btn-accordion {
+            width: 100%;
+            padding: 10px;
+            text-align: left;
+            background: var(--btn-warm-secondary);
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .accordion-content {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            padding: 6px 0 2px 8px;
+            border-left: 2px solid var(--border-color);
+            margin-top: 4px;
+        }
+
+        .accordion-content.open { display: flex; }
+
+        .option-item {
+            padding: 8px 10px;
+            font-size: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            background: rgba(0,0,0,0.03);
+            border: 1px solid transparent;
+        }
+
+        .option-item:hover { background: rgba(0,0,0,0.06); }
+
+        .option-item.selected {
+            border-color: var(--border-color);
+            background: rgba(0,0,0,0.1);
+            font-weight: bold;
         }
 
         .font-adjuster {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(0,0,0,0.1);
-            padding: 8px 12px;
+            background: rgba(0,0,0,0.04);
+            padding: 6px 10px;
             border-radius: 8px;
+            font-size: 12px;
         }
 
         .btn-step {
-            width: 34px;
-            height: 34px;
-            font-size: 18px;
+            width: 30px;
+            height: 30px;
+            font-size: 16px;
             background: var(--btn-warm-secondary);
         }
 
         .select-theme, .input-api {
             width: 100%;
-            padding: 10px;
-            background: rgba(0,0,0,0.1);
+            padding: 8px;
+            background: rgba(0,0,0,0.04);
             border: 1px solid var(--border-color);
             color: var(--ui-text);
             border-radius: 8px;
-            font-size: 13px;
+            font-size: 12px;
             outline: none;
         }
 
-        .history-actions {
+        /* History Drawer Specifics */
+        .history-toolbar {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
 
         .btn-hist-action {
@@ -313,70 +323,103 @@
 
         .btn-merge { background: linear-gradient(145deg, #2E7D32, #1B5E20); color: white; }
         .btn-delete { background: linear-gradient(145deg, #C62828, #8E0000); color: white; }
+        .btn-cancel { background: var(--btn-warm-secondary); }
 
         .history-list {
             display: flex;
             flex-direction: column;
             gap: 8px;
-            max-height: 200px;
-            overflow-y: auto;
+            flex-grow: 1;
         }
 
-        .history-item {
+        .history-card {
+            position: relative;
             display: flex;
             align-items: flex-start;
             gap: 8px;
-            background: rgba(0,0,0,0.08);
+            background: rgba(0,0,0,0.04);
             padding: 10px;
             border-radius: 8px;
-            font-size: 13px;
+            font-size: 12px;
             border: 1px solid var(--border-color);
-        }
-
-        .history-item input[type="checkbox"] {
-            margin-top: 3px;
-            transform: scale(1.2);
-        }
-
-        .history-text {
-            flex: 1;
             cursor: pointer;
-            word-break: break-all;
+            user-select: none;
         }
 
-        /* Main Workspace */
+        .history-card .chk {
+            display: none;
+            margin-top: 2px;
+            transform: scale(1.1);
+        }
+
+        .history-list.selection-mode .history-card .chk { display: block; }
+
+        .history-card-text {
+            flex: 1;
+            word-break: break-all;
+            line-height: 1.3;
+        }
+
+        .badge-pasted {
+            display: none;
+            position: absolute;
+            top: 4px;
+            right: 6px;
+            background: #2E7D32;
+            color: #FFF;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .history-card.is-pasted .badge-pasted { display: block; }
+
+        .pagination-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 8px;
+            border-top: 1px solid var(--border-color);
+            font-size: 12px;
+        }
+
+        /* Main Canvas Workspace with Page Flipping */
         .main-container {
             display: flex;
             flex-direction: column;
-            flex-grow: 1;
+            height: calc(100vh - 30px);
+            height: calc(100dvh - 30px);
             width: 100%;
         }
 
         .instruction-banner {
-            font-size: 13px;
-            color: var(--ui-text);
+            font-size: 12px;
             background: var(--card-bg);
             border: 1px dashed var(--border-color);
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 8px;
-            margin-bottom: 8px;
-            line-height: 1.4;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-right: 120px;
+            margin-bottom: 6px;
+            margin-right: 175px;
+            line-height: 1.3;
+        }
+
+        .canvas-viewport {
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
         }
 
         #big-text-input {
             width: 100%;
-            flex-grow: 1;
-            min-height: 60vh;
+            height: 100%;
             background: transparent;
             color: var(--text-color);
             border: none;
             padding: 0;
-            margin-top: calc(var(--line-height-px) * 0.1);
-            font-size: clamp(20px, calc((100vw - 160px) / var(--chars-per-row)), 72px);
+            margin-top: calc(var(--line-height-px) * 0.08);
+            font-size: clamp(18px, calc((100vw - 120px) / var(--chars-per-row)), 68px);
             line-height: var(--line-height-px);
             resize: none;
             outline: none;
@@ -384,76 +427,77 @@
             font-family: inherit;
             font-weight: bold;
             letter-spacing: 1px;
+            overflow: hidden;
         }
 
-        #big-text-input::placeholder {
-            color: var(--text-color);
-            opacity: 0.4;
+        .canvas-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 10px;
+            font-size: 12px;
+            border-top: 1px solid var(--border-color);
+            background: var(--card-bg);
+            border-radius: 8px;
+        }
+
+        .canvas-page-btn {
+            padding: 4px 12px;
+            font-size: 12px;
+            background: var(--btn-warm-secondary);
         }
 
         .toast {
             position: fixed;
-            bottom: 20px;
+            bottom: 50px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(36, 32, 28, 0.95);
+            background: var(--card-bg);
             color: var(--ui-text);
             border: 1px solid var(--border-color);
-            padding: 12px 24px;
+            padding: 10px 20px;
             border-radius: 8px;
-            font-size: 14px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            font-size: 13px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             display: none;
             z-index: 2000;
-            text-align: center;
         }
 
         @media (max-width: 600px) {
-            body {
-                padding: 15px 10px 15px 75px;
-            }
-            .punctuation-sidebar {
-                left: 4px;
-                width: 68px;
-            }
-            .btn-punc {
-                width: 40px;
-            }
-            .instruction-banner {
-                margin-right: 0;
-                margin-top: 45px;
-                font-size: 12px;
-            }
+            body { padding: 10px 10px 10px 68px; }
+            .punctuation-sidebar { left: 4px; width: 58px; }
+            .btn-punc { width: 36px; font-size: 14px; }
+            .instruction-banner { margin-right: 0; margin-top: 42px; font-size: 11px; }
         }
     </style>
 </head>
-<body class="theme-warm-amber">
+<body class="theme-cream-paper">
 
     <div id="toast" class="toast"></div>
 
+    <!-- Top Action Nav -->
+    <div class="top-nav-bar">
+        <button class="btn-3d top-btn" onclick="openDrawer('history-drawer')">📜 歷史 History</button>
+        <button class="btn-3d top-btn" onclick="openDrawer('settings-drawer')">⚙ 設定 Settings</button>
+    </div>
+
     <!-- Left Floating Sidebar -->
     <aside id="left-sidebar" class="punctuation-sidebar">
-        <button class="sidebar-toggle-btn" onclick="toggleLeftSidebar()" title="Collapse/Expand">◄</button>
-        
+        <button class="sidebar-toggle-btn" onclick="toggleLeftSidebar()">◄</button>
         <div class="sidebar-content">
             <button id="rewrite-btn" class="btn-3d btn-sidebar-action btn-sidebar-rewrite" onclick="handleRewrite()">
-                AI 重寫<br><span style="font-size:9px; opacity:0.8;">Rewrite</span>
+                AI 重寫<br><span style="font-size:8px; opacity:0.8;">Rewrite</span>
             </button>
-
             <button class="btn-3d btn-sidebar-action btn-sidebar-utility" onclick="copyText()">
-                複製<br><span style="font-size:9px; opacity:0.8;">Copy</span>
+                複製<br><span style="font-size:8px; opacity:0.8;">Copy</span>
             </button>
-
             <button class="btn-3d btn-sidebar-action btn-sidebar-utility" onclick="pasteText()">
-                貼上<br><span style="font-size:9px; opacity:0.8;">Paste</span>
+                貼上<br><span style="font-size:8px; opacity:0.8;">Paste</span>
             </button>
-
             <button class="btn-3d btn-sidebar-action btn-sidebar-utility" onclick="clearText()">
-                清除<br><span style="font-size:9px; opacity:0.8;">Clear</span>
+                清除<br><span style="font-size:8px; opacity:0.8;">Clear</span>
             </button>
-
             <div class="sidebar-divider"></div>
-
             <div class="punc-group">
                 <button class="btn-3d btn-punc" onclick="insertPunctuation('，')">，</button>
                 <button class="btn-3d btn-punc" onclick="insertPunctuation('。')">。</button>
@@ -468,45 +512,50 @@
         </div>
     </aside>
 
-    <button class="btn-3d right-toggle-btn" onclick="toggleRightSidebar()">⚙ 設定 Settings</button>
-
-    <!-- Right Settings Drawer -->
-    <aside id="right-sidebar" class="right-sidebar">
+    <!-- Settings Drawer -->
+    <aside id="settings-drawer" class="drawer">
         <div class="setting-section">
             <h3>API 金鑰 (API Key)</h3>
             <input type="password" id="api-key" class="input-api" placeholder="Enter OpenRouter API Key">
         </div>
 
         <div class="setting-section">
-            <h3>語氣風格 (Tone Preset)</h3>
-            <select id="tone-select" class="select-theme">
-                <option value="preserve">保持原意 (Preserve Original)</option>
-                <option value="polish">修飾流暢 (Polished & Formal)</option>
-                <option value="warm">溫和親切 (Warm & Conversational)</option>
-            </select>
+            <h3>語氣風格 (Tone)</h3>
+            <button class="btn-3d btn-accordion" onclick="toggleAccordion('tone-acc')">
+                <span id="tone-label">保持原意 (Preserve)</span> ▾
+            </button>
+            <div id="tone-acc" class="accordion-content">
+                <div class="option-item selected" data-value="preserve" onclick="selectTone('preserve', '保持原意 (Preserve)')">保持原意 (Preserve Original)</div>
+                <div class="option-item" data-value="polish" onclick="selectTone('polish', '修飾流暢 (Polished)')">修飾流暢 (Polished & Formal)</div>
+                <div class="option-item" data-value="warm" onclick="selectTone('warm', '溫和親切 (Warm)')">溫和親切 (Warm & Conversational)</div>
+            </div>
         </div>
 
         <div class="setting-section">
-            <h3>廣東話語音過濾 (HK Cantonese Filter)</h3>
-            <select id="filter-select" class="select-theme">
-                <option value="hk_clean">廣東話口語（清除口吃 / 「即係」贅字）</option>
-                <option value="hk_to_written">轉為標準書面語（適合正式訊息 / 電郵）</option>
-                <option value="voice_stutter">僅修復重複字詞（保留完全原音）</option>
-                <option value="none">不使用過濾器 (No Filter)</option>
-            </select>
-            <span style="font-size:11px; opacity:0.75; margin-top:2px;">
-                💡 提示：「轉為標準書面語」已包含贅字與口吃修復功能。
-            </span>
+            <h3>廣東話過濾 (Filter)</h3>
+            <button class="btn-3d btn-accordion" onclick="toggleAccordion('filter-acc')">
+                <span id="filter-label">廣東話口語淨化</span> ▾
+            </button>
+            <div id="filter-acc" class="accordion-content">
+                <div class="option-item selected" data-value="hk_clean" onclick="selectFilter('hk_clean', '廣東話口語淨化')">廣東話口語（清除口吃/贅字）</div>
+                <div class="option-item" data-value="hk_to_written" onclick="selectFilter('hk_to_written', '轉為標準書面語')">轉為標準書面語（正式電郵）</div>
+                <div class="option-item" data-value="voice_stutter" onclick="selectFilter('voice_stutter', '僅修復重複字詞')">僅修復重複字詞（保留原音）</div>
+                <div class="option-item" data-value="none" onclick="selectFilter('none', '不使用過濾器')">不使用過濾器 (No Filter)</div>
+            </div>
+            <span style="font-size:10px; opacity:0.75;">💡 書面語已包含贅字修復。</span>
         </div>
 
         <div class="setting-section">
-            <h3>點列/條理化 (Point-Form Style)</h3>
-            <select id="pointform-select" class="select-theme">
-                <option value="smart_bullet">智能列點 Bullet Points (•)</option>
-                <option value="smart_number">數字列點 Numbered List (1, 2, 3)</option>
-                <option value="smart_step">步驟流程 Step-by-Step Flow</option>
-                <option value="off">關閉 Off (Paragraphs)</option>
-            </select>
+            <h3>點列風格 (Point-Form)</h3>
+            <button class="btn-3d btn-accordion" onclick="toggleAccordion('pointform-acc')">
+                <span id="pointform-label">智能列點 (Bullets)</span> ▾
+            </button>
+            <div id="pointform-acc" class="accordion-content">
+                <div class="option-item selected" data-value="smart_bullet" onclick="selectPointForm('smart_bullet', '智能列點 (Bullets)')">智能列點 Bullet Points (•)</div>
+                <div class="option-item" data-value="smart_number" onclick="selectPointForm('smart_number', '數字列點 (Numbered)')">數字列點 Numbered List (1, 2, 3)</div>
+                <div class="option-item" data-value="smart_step" onclick="selectPointForm('smart_step', '步驟流程 (Steps)')">步驟流程 Step-by-Step</div>
+                <div class="option-item" data-value="off" onclick="selectPointForm('off', '關閉 (Off)')">關閉 Off (Paragraphs)</div>
+            </div>
         </div>
 
         <div class="setting-section">
@@ -524,29 +573,51 @@
         <div class="setting-section">
             <h3>配色主題 (Theme)</h3>
             <select id="theme-select" class="select-theme" onchange="applyTheme(this.value)">
-                <option value="theme-warm-amber">溫暖琥珀 (Warm Amber)</option>
-                <option value="theme-aged-parchment">復古羊皮紙 (Aged Parchment)</option>
-                <option value="theme-cream-paper">柔和奶油白 (Warm Cream Daylight)</option>
+                <option value="theme-cream-paper">柔和奶油白 (Cream Default)</option>
+                <option value="theme-light-blue">清爽淺藍 (Light Blue)</option>
+                <option value="theme-light-pink">溫柔淺粉紅 (Light Pink)</option>
             </select>
-        </div>
-
-        <div class="setting-section">
-            <h3>歷史紀錄 (History)</h3>
-            <div class="history-actions">
-                <button class="btn-3d btn-hist-action btn-merge" onclick="mergeSelectedHistory()">合併選取</button>
-                <button class="btn-3d btn-hist-action btn-delete" onclick="deleteSelectedHistory()">刪除選取</button>
-            </div>
-            <div id="history-list" class="history-list"></div>
         </div>
     </aside>
 
-    <!-- Main Workspace -->
-    <main class="main-container">
+    <!-- History Drawer -->
+    <aside id="history-drawer" class="drawer">
+        <div class="setting-section" style="flex-grow: 1; display: flex; flex-direction: column;">
+            <h3>歷史紀錄 (History)</h3>
+            <div class="history-toolbar" id="hist-default-tools">
+                <button class="btn-3d btn-hist-action btn-merge" onclick="enterHistorySelection('merge')">合併選取</button>
+                <button class="btn-3d btn-hist-action btn-delete" onclick="enterHistorySelection('delete')">刪除選取</button>
+            </div>
+            <div class="history-toolbar" id="hist-select-tools" style="display:none;">
+                <button class="btn-3d btn-hist-action btn-merge" onclick="confirmHistoryAction()">確認執行</button>
+                <button class="btn-3d btn-hist-action btn-cancel" onclick="exitHistorySelection()">取消</button>
+            </div>
+
+            <div id="history-list" class="history-list" style="margin-top: 8px;"></div>
+
+            <div class="pagination-bar">
+                <button class="btn-3d canvas-page-btn" onclick="changeHistoryPage(-1)">◄</button>
+                <span id="hist-page-indicator">第 1 / 1 頁</span>
+                <button class="btn-3d canvas-page-btn" onclick="changeHistoryPage(1)">►</button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Workspace Canvas -->
+    <main class="main-container" onclick="handleCanvasAreaClick(event)">
         <div class="instruction-banner">
-            💡 <span>點擊下方輸入框輸入文字或貼上語音轉譯，側邊欄可進行 AI 重寫、廣東話淨化與點列化。</span>
+            💡 點擊下方輸入框輸入文字。支援多頁翻頁/手勢滑動切換。
         </div>
 
-        <textarea id="big-text-input" placeholder="請在此輸入文字..."></textarea>
+        <div class="canvas-viewport" id="canvas-viewport">
+            <textarea id="big-text-input" placeholder="請在此輸入文字..."></textarea>
+        </div>
+
+        <div class="canvas-footer">
+            <button class="btn-3d canvas-page-btn" onclick="changeCanvasPage(-1)">◄ 上一頁</button>
+            <span id="canvas-page-indicator">第 1 / 1 頁</span>
+            <button class="btn-3d canvas-page-btn" onclick="changeCanvasPage(1)">下一頁 ►</button>
+        </div>
     </main>
 
     <script>
@@ -555,10 +626,24 @@
         const input = document.getElementById('big-text-input');
         const apiKeyInput = document.getElementById('api-key');
         const rewriteBtn = document.getElementById('rewrite-btn');
-        const historyListEl = document.getElementById('history-list');
         const toastEl = document.getElementById('toast');
-        const toneSelect = document.getElementById('tone-select');
-        const filterSelect = document.getElementById('filter-select');
+        const historyListEl = document.getElementById('history-list');
+
+        let currentTone = 'preserve';
+        let currentFilter = 'hk_clean';
+        let currentPointForm = 'smart_bullet';
+
+        let charsPerRow = parseInt(localStorage.getItem('saved_chars_per_row')) || 8;
+        let historyItems = JSON.parse(localStorage.getItem('saved_history_items')) || [];
+        let pastedItemIds = new Set();
+
+        let isFirstInput = true;
+        let histSelectionMode = null; // 'merge' or 'delete'
+        let histCurrentPage = 1;
+        const HIST_PER_PAGE = 5;
+
+        let canvasCurrentPage = 1;
+        let canvasTotalPages = 1;
 
         const TONE_BASE = {
             preserve: "Keep original words and intent intact while fixing typos, missing punctuation, and minor awkwardness.",
@@ -567,111 +652,119 @@
         };
 
         const CANTONESE_FILTERS = {
-            hk_clean: `
-[HK CANTONESE SPEECH CLEANUP]
-- Process raw Hong Kong spoken Cantonese (廣東話口語).
-- REMOVE VOICE FILLERS & HESITATIONS: Strip words like '呃', '即係', '咁即係', '呢個呢個', '諗住', '你知啦', '咁樣' when used purely as speech hesitation.
-- RESOLVE SELF-CORRECTIONS: If speaker self-corrects mid-sentence (e.g., '兩點... 唔係, 三點先啱'), retain ONLY the final intended statement ('三點').
-- REMOVE DUPLICATED WORDS: Collapse accidental repeats caused by voice-to-text lag.
-- RETAIN authentic HK Cantonese phrasing without converting to standard written Chinese unless requested.
-            `,
-            hk_to_written: `
-[CANTONESE TO FORMAL WRITTEN CHINESE]
-- Convert spoken HK Cantonese into clean, standard formal written Chinese (書面語).
-- Convert Cantonese vocabulary to written Chinese (e.g., '聽日' -> '明天', '佢地' -> '他們', '睇下' -> '查看', '幾多' -> '多少').
-- Remove all spoken hesitations, stutters, and filler words.
-            `,
-            voice_stutter: `
-[STUTTER & REPETITION FILTER]
-- Focus strictly on cleaning speech-to-text duplication, stutters, and audio lag repeats.
-- Do not alter word choices or style beyond removing accidental repetitive noise.
-            `,
+            hk_clean: "[HK CANTONESE SPEECH CLEANUP] Remove hesitations like '呃', '即係', '諗住', and duplicated words, while retaining HK Cantonese phrasing.",
+            hk_to_written: "[CANTONESE TO FORMAL WRITTEN CHINESE] Convert HK Cantonese vocabulary to formal written Chinese (書面語) and remove fillers.",
+            voice_stutter: "[STUTTER FILTER] Strip speech-to-text duplication and stutters without altering style.",
             none: ""
         };
 
         const POINT_FORM_RULES = {
-            smart_bullet: `
-[SMART POINT-FORM FORMATTING]
-- Evaluate the text's structure.
-- IF text contains multiple distinct points, tasks, steps, concepts, or long sentences: convert into a bulleted list using '• '.
-- IF text is a single brief reminder or simple short sentence: keep as a clear single line without forcing unnecessary bullet points.
-            `,
-            smart_number: `
-[NUMBERED LIST FORMATTING]
-- IF text contains sequential steps, multiple items, or distinct points: format into a numbered list (1. 2. 3.).
-- IF text is a simple brief phrase: keep as a single clear sentence.
-            `,
-            smart_step: `
-[STEP-BY-STEP FLOW]
-- Format complex ideas or multiple instructions into structured operational steps (例如：步驟一：... 步驟二：...).
-            `,
-            off: "Maintain original paragraph layout without converting to point form."
+            smart_bullet: "IF multiple points exist, format with bullet points (•). Keep short single sentences as plain lines.",
+            smart_number: "IF sequential ideas exist, format into numbered points (1. 2. 3.).",
+            smart_step: "Format complex operations into structured steps.",
+            off: "Maintain paragraph layout."
         };
-
-        let charsPerRow = parseInt(localStorage.getItem('saved_chars_per_row')) || 8;
-        let historyItems = JSON.parse(localStorage.getItem('saved_history_items')) || [];
-        let isFirstInput = true;
 
         document.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem('openrouter_key')) {
                 apiKeyInput.value = localStorage.getItem('openrouter_key');
             }
 
-            const savedTheme = localStorage.getItem('saved_theme') || 'theme-warm-amber';
+            const savedTheme = localStorage.getItem('saved_theme') || 'theme-cream-paper';
             document.getElementById('theme-select').value = savedTheme;
             applyTheme(savedTheme);
 
             updateFontCSS();
             renderHistory();
-
-            // Setup Approach 1 Dynamic UI Conflict Resolution
-            setupConflictResolution();
+            setupTouchSwipe();
+            setupAutosaveListeners();
         });
 
-        function setupConflictResolution() {
-            filterSelect.addEventListener('change', () => {
-                if (filterSelect.value === 'hk_to_written' && toneSelect.value === 'preserve') {
-                    toneSelect.value = 'polish';
-                    showToast("💡 已自動切換至「修飾流暢」以配合書面語轉換");
-                }
-            });
-
-            toneSelect.addEventListener('change', () => {
-                if (toneSelect.value === 'preserve' && filterSelect.value === 'hk_to_written') {
-                    filterSelect.value = 'hk_clean';
-                    showToast("💡 已自動切換至「廣東話口語」以保留原始用語");
-                }
-            });
+        // Setup Autosave Event Listeners for Page Close/Unload
+        function setupAutosaveListeners() {
+            window.addEventListener('beforeunload', () => autoSaveCanvasText());
+            window.addEventListener('pagehide', () => autoSaveCanvasText());
         }
 
-        input.addEventListener('focus', handleInitialClear);
-        input.addEventListener('input', handleInitialClear);
+        function autoSaveCanvasText() {
+            if (isFirstInput) return;
+            const currentText = input.value.trim();
+            if (!currentText || currentText === "請在此輸入文字...") return;
 
-        function handleInitialClear() {
-            if (isFirstInput) {
-                isFirstInput = false;
-                if (input.value === "請在此輸入文字...") {
-                    input.value = "";
-                }
+            // Prevent duplicate save if identical to the latest history entry
+            if (historyItems.length > 0 && historyItems[0].text === currentText) {
+                return;
             }
+
+            addHistoryItem(currentText);
         }
 
-        apiKeyInput.addEventListener('change', () => {
-            localStorage.setItem('openrouter_key', apiKeyInput.value.trim());
-        });
+        // Close Drawers & Clear Pasted Badges on Canvas Click
+        function handleCanvasAreaClick(e) {
+            if (e.target.closest('.top-nav-bar') || e.target.closest('.drawer')) return;
+            closeAllDrawers();
+            clearPastedBadges();
+        }
 
-        function showToast(msg) {
-            toastEl.textContent = msg;
-            toastEl.style.display = 'block';
-            setTimeout(() => { toastEl.style.display = 'none'; }, 3000);
+        function closeAllDrawers() {
+            document.querySelectorAll('.drawer').forEach(d => d.classList.remove('open'));
+        }
+
+        function clearPastedBadges() {
+            pastedItemIds.clear();
+            renderHistory();
+        }
+
+        function openDrawer(id) {
+            closeAllDrawers();
+            document.getElementById(id).classList.add('open');
         }
 
         function toggleLeftSidebar() {
             document.getElementById('left-sidebar').classList.toggle('collapsed');
         }
 
-        function toggleRightSidebar() {
-            document.getElementById('right-sidebar').classList.toggle('open');
+        function toggleAccordion(id) {
+            const acc = document.getElementById(id);
+            const isOpened = acc.classList.contains('open');
+            document.querySelectorAll('.accordion-content').forEach(a => a.classList.remove('open'));
+            if (!isOpened) acc.classList.add('open');
+        }
+
+        function selectTone(val, label) {
+            currentTone = val;
+            document.getElementById('tone-label').textContent = label;
+            updateSelectedUI('tone-acc', val);
+
+            if (currentTone === 'preserve' && currentFilter === 'hk_to_written') {
+                selectFilter('hk_clean', '廣東話口語淨化');
+                showToast("💡 已自動切換至「廣東話口語」以保留原始用語");
+            }
+        }
+
+        function selectFilter(val, label) {
+            currentFilter = val;
+            document.getElementById('filter-label').textContent = label;
+            updateSelectedUI('filter-acc', val);
+
+            if (currentFilter === 'hk_to_written' && currentTone === 'preserve') {
+                selectTone('polish', '修飾流暢 (Polished)');
+                showToast("💡 已自動切換至「修飾流暢」以配合書面語轉換");
+            }
+        }
+
+        function selectPointForm(val, label) {
+            currentPointForm = val;
+            document.getElementById('pointform-label').textContent = label;
+            updateSelectedUI('pointform-acc', val);
+        }
+
+        function updateSelectedUI(accId, val) {
+            const acc = document.getElementById(accId);
+            acc.querySelectorAll('.option-item').forEach(opt => {
+                opt.classList.toggle('selected', opt.getAttribute('data-value') === val);
+            });
+            acc.classList.remove('open');
         }
 
         function changeFontSize(delta) {
@@ -683,6 +776,7 @@
         function updateFontCSS() {
             document.documentElement.style.setProperty('--chars-per-row', charsPerRow);
             document.getElementById('chars-display').textContent = charsPerRow;
+            calculateCanvasPages();
         }
 
         function applyTheme(themeClass) {
@@ -690,132 +784,104 @@
             localStorage.setItem('saved_theme', themeClass);
         }
 
-        function insertPunctuation(char) {
-            handleInitialClear();
-            input.focus();
-            const start = input.selectionStart;
-            const end = input.selectionEnd;
-            const text = input.value;
-
-            input.value = text.substring(0, start) + char + text.substring(end);
-            input.selectionStart = input.selectionEnd = start + char.length;
+        // History Management & Selection Mode
+        function enterHistorySelection(mode) {
+            histSelectionMode = mode;
+            document.getElementById('hist-default-tools').style.display = 'none';
+            document.getElementById('hist-select-tools').style.display = 'flex';
+            historyListEl.classList.add('selection-mode');
         }
 
-        async function copyText() {
-            const textToCopy = input.value;
-            if (!textToCopy.trim()) {
-                showToast("⚠️ 目前沒有文字可複製");
+        function exitHistorySelection() {
+            histSelectionMode = null;
+            document.getElementById('hist-default-tools').style.display = 'flex';
+            document.getElementById('hist-select-tools').style.display = 'none';
+            historyListEl.classList.remove('selection-mode');
+            renderHistory();
+        }
+
+        function confirmHistoryAction() {
+            const checkedBoxes = historyListEl.querySelectorAll('.chk:checked');
+            const selectedIds = Array.from(checkedBoxes).map(cb => parseInt(cb.getAttribute('data-id')));
+
+            if (selectedIds.length === 0) {
+                showToast("請先選擇歷史項目");
                 return;
             }
 
-            try {
-                await navigator.clipboard.writeText(textToCopy);
-                showToast("📋 已成功複製全部文字");
-            } catch (err) {
-                input.select();
-                document.execCommand('copy');
-                showToast("📋 已複製全部文字");
-            }
-        }
-
-        async function pasteText() {
-            try {
-                const textFromClipboard = await navigator.clipboard.readText();
-                if (!textFromClipboard) {
-                    showToast("⚠️ 剪貼簿為空");
+            if (histSelectionMode === 'delete') {
+                historyItems = historyItems.filter(item => !selectedIds.includes(item.id));
+                showToast("已刪除選取項目");
+            } else if (histSelectionMode === 'merge') {
+                if (selectedIds.length < 2) {
+                    showToast("請至少選擇兩項進行合併");
                     return;
                 }
+                const selectedItems = historyItems.filter(item => selectedIds.includes(item.id));
+                const mergedText = selectedItems.map(item => item.text).join("\n\n");
+                addHistoryItem(mergedText);
+                showToast("已合併選取項目");
+            }
+            saveHistory();
+            exitHistorySelection();
+        }
 
+        function handleHistoryCardClick(id, text) {
+            if (histSelectionMode) {
+                const chk = document.querySelector(`.chk[data-id="${id}"]`);
+                if (chk) chk.checked = !chk.checked;
+            } else {
                 handleInitialClear();
-                input.focus();
-
-                const start = input.selectionStart;
-                const end = input.selectionEnd;
-                const currentText = input.value;
-
-                input.value = currentText.substring(0, start) + textFromClipboard + currentText.substring(end);
-                input.selectionStart = input.selectionEnd = start + textFromClipboard.length;
-
-                showToast("📥 已貼上剪貼簿內容");
-            } catch (err) {
-                showToast("⚠️ 無法讀取剪貼簿，請使用手動貼上");
+                if (input.value.trim().length > 0) {
+                    input.value += "\n\n" + text;
+                } else {
+                    input.value = text;
+                }
+                pastedItemIds.add(id);
+                renderHistory();
+                calculateCanvasPages();
+                showToast("已將內容貼至下一行");
             }
         }
 
-        function constructSystemPrompt() {
-            const toneKey = toneSelect.value;
-            const filterKey = filterSelect.value;
-            const pointFormKey = document.getElementById('pointform-select').value;
-
-            return `
-You are an expert communication assistant designed for Hong Kong Cantonese users and clear text refinement.
-
-[CORE OBJECTIVE]
-Transform raw, dictated, or typed Chinese input into clean, structured, and easy-to-read text.
-
-[TONE INSTRUCTION]
-${TONE_BASE[toneKey] || TONE_BASE.preserve}
-
-${CANTONESE_FILTERS[filterKey] || ""}
-
-${POINT_FORM_RULES[pointFormKey] || ""}
-
-[OUTPUT STYLING RULES]
-- Output ONLY the final processed text.
-- Do NOT add introductory greetings, robotic meta-announcements, explanations, or quotes around output.
-- Keep output clear, natural, and accessible.
-            `.trim();
-        }
-
-        async function handleRewrite() {
-            const rawText = input.value.trim();
-            const apiKey = apiKeyInput.value.trim();
-
-            if (!rawText) return;
-
-            if (!apiKey) {
-                showToast("請在右側設定欄輸入 OpenRouter API Key");
-                toggleRightSidebar();
+        function renderHistory() {
+            historyListEl.innerHTML = '';
+            if (historyItems.length === 0) {
+                historyListEl.innerHTML = '<div style="font-size:12px; opacity:0.6;">無歷史紀錄</div>';
+                updateHistPagination(1);
                 return;
             }
 
-            rewriteBtn.disabled = true;
-            rewriteBtn.innerHTML = "重寫中...<br><span style='font-size:9px;'>Rewriting</span>";
+            const totalPages = Math.ceil(historyItems.length / HIST_PER_PAGE);
+            histCurrentPage = Math.max(1, Math.min(histCurrentPage, totalPages));
 
-            const combinedSystemPrompt = constructSystemPrompt();
+            const startIdx = (histCurrentPage - 1) * HIST_PER_PAGE;
+            const pageItems = historyItems.slice(startIdx, startIdx + HIST_PER_PAGE);
 
-            try {
-                const response = await fetch(WORKER_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        text: rawText,
-                        apiKey: apiKey,
-                        systemPrompt: combinedSystemPrompt
-                    })
-                });
+            pageItems.forEach(item => {
+                const card = document.createElement('div');
+                card.className = `history-card ${pastedItemIds.has(item.id) ? 'is-pasted' : ''}`;
+                card.onclick = () => handleHistoryCardClick(item.id, item.text);
 
-                const data = await response.json();
+                card.innerHTML = `
+                    <input type="checkbox" class="chk" data-id="${item.id}" onclick="event.stopPropagation()">
+                    <span class="history-card-text">${escapeHtml(item.text)}</span>
+                    <span class="badge-pasted">已貼上 Pasted</span>
+                `;
+                historyListEl.appendChild(card);
+            });
 
-                if (data.choices && data.choices[0] && data.choices[0].message) {
-                    const rewritten = data.choices[0].message.content.trim();
-                    
-                    if (rewritten.toLowerCase().includes("user safety") || rewritten.startsWith("Safety:")) {
-                        showToast("⚠️ 重寫失敗：觸發 AI 安全過濾機制，您的原始文字已保留。");
-                    } else {
-                        input.value = rewritten;
-                        addHistoryItem(rewritten);
-                    }
-                } else {
-                    const errDetail = data.error ? (data.error.message || JSON.stringify(data.error)) : "無法重寫文字";
-                    showToast("⚠️ 重寫失敗: " + errDetail + " (原始文字已保留)");
-                }
-            } catch (err) {
-                showToast("⚠️ 網路錯誤或 Worker 無法連線，原始文字已保留。");
-            } finally {
-                rewriteBtn.disabled = false;
-                rewriteBtn.innerHTML = "AI 重寫<br><span style='font-size:9px; opacity:0.8;'>Rewrite</span>";
-            }
+            updateHistPagination(totalPages);
+        }
+
+        function updateHistPagination(totalPages) {
+            document.getElementById('hist-page-indicator').textContent = `第 ${histCurrentPage} / ${totalPages} 頁`;
+        }
+
+        function changeHistoryPage(delta) {
+            const totalPages = Math.ceil(historyItems.length / HIST_PER_PAGE) || 1;
+            histCurrentPage = Math.max(1, Math.min(totalPages, histCurrentPage + delta));
+            renderHistory();
         }
 
         function addHistoryItem(text) {
@@ -829,64 +895,145 @@ ${POINT_FORM_RULES[pointFormKey] || ""}
             localStorage.setItem('saved_history_items', JSON.stringify(historyItems));
         }
 
-        function renderHistory() {
-            historyListEl.innerHTML = '';
-            if (historyItems.length === 0) {
-                historyListEl.innerHTML = '<div style="font-size:12px; opacity:0.6;">無紀錄 (No history)</div>';
-                return;
+        // Canvas Pagination & Page Scroll Logic
+        input.addEventListener('input', () => {
+            handleInitialClear();
+            calculateCanvasPages();
+        });
+
+        function calculateCanvasPages() {
+            const lineHeight = 58;
+            const viewportHeight = document.getElementById('canvas-viewport').clientHeight || 400;
+            const linesPerPage = Math.floor(viewportHeight / lineHeight) || 6;
+            
+            const totalLines = input.value.split('\n').reduce((acc, line) => {
+                return acc + Math.max(1, Math.ceil(line.length / charsPerRow));
+            }, 0);
+
+            canvasTotalPages = Math.max(1, Math.ceil(totalLines / linesPerPage));
+            canvasCurrentPage = Math.min(canvasCurrentPage, canvasTotalPages);
+
+            document.getElementById('canvas-page-indicator').textContent = `第 ${canvasCurrentPage} / ${canvasTotalPages} 頁`;
+        }
+
+        function changeCanvasPage(delta) {
+            canvasCurrentPage = Math.max(1, Math.min(canvasTotalPages, canvasCurrentPage + delta));
+            const viewportHeight = document.getElementById('canvas-viewport').clientHeight || 400;
+            input.scrollTop = (canvasCurrentPage - 1) * viewportHeight;
+            document.getElementById('canvas-page-indicator').textContent = `第 ${canvasCurrentPage} / ${canvasTotalPages} 頁`;
+        }
+
+        function setupTouchSwipe() {
+            let touchStartX = 0;
+            const viewport = document.getElementById('canvas-viewport');
+
+            viewport.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            viewport.addEventListener('touchend', e => {
+                const touchEndX = e.changedTouches[0].screenX;
+                if (touchStartX - touchEndX > 50) changeCanvasPage(1);
+                if (touchEndX - touchStartX > 50) changeCanvasPage(-1);
+            }, { passive: true });
+        }
+
+        function handleInitialClear() {
+            if (isFirstInput) {
+                isFirstInput = false;
+                if (input.value === "請在此輸入文字...") input.value = "";
             }
-
-            historyItems.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'history-item';
-                div.innerHTML = `
-                    <input type="checkbox" data-id="${item.id}">
-                    <span class="history-text" onclick="loadHistoryToInput('${escapeHtml(item.text)}')">${escapeHtml(item.text)}</span>
-                `;
-                historyListEl.appendChild(div);
-            });
         }
 
-        function loadHistoryToInput(text) {
-            isFirstInput = false;
-            input.value = text;
+        function insertPunctuation(char) {
+            handleInitialClear();
+            input.focus();
+            const start = input.selectionStart;
+            const end = input.selectionEnd;
+            input.value = input.value.substring(0, start) + char + input.value.substring(end);
+            input.selectionStart = input.selectionEnd = start + char.length;
+            calculateCanvasPages();
         }
 
-        function mergeSelectedHistory() {
-            const checkboxes = historyListEl.querySelectorAll('input[type="checkbox"]:checked');
-            const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.getAttribute('data-id')));
+        async function copyText() {
+            if (!input.value.trim()) return showToast("⚠️ 沒有文字可複製");
+            await navigator.clipboard.writeText(input.value);
+            showToast("📋 已複製全部文字");
+        }
 
-            if (selectedIds.length < 2) {
-                showToast("請至少選擇兩個紀錄進行合併");
-                return;
+        async function pasteText() {
+            try {
+                const clipText = await navigator.clipboard.readText();
+                if (!clipText) return showToast("⚠️ 剪貼簿為空");
+                handleInitialClear();
+                input.value += (input.value ? "\n" : "") + clipText;
+                calculateCanvasPages();
+                showToast("📥 已貼上剪貼簿內容");
+            } catch (err) {
+                showToast("⚠️ 請使用手動貼上");
             }
-
-            const selectedItems = historyItems.filter(item => selectedIds.includes(item.id));
-            const mergedText = selectedItems.map(item => item.text).join("\n\n");
-
-            addHistoryItem(mergedText);
-            isFirstInput = false;
-            input.value = mergedText;
         }
 
-        function deleteSelectedHistory() {
-            const checkboxes = historyListEl.querySelectorAll('input[type="checkbox"]:checked');
-            const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.getAttribute('data-id')));
-
-            if (selectedIds.length === 0) {
-                showToast("請選擇要刪除的紀錄");
-                return;
-            }
-
-            historyItems = historyItems.filter(item => !selectedIds.includes(item.id));
-            saveHistory();
-            renderHistory();
-        }
-
+        // Updated Clear Action: Auto-saves existing content to history first
         function clearText() {
+            autoSaveCanvasText();
             isFirstInput = false;
             input.value = '';
+            calculateCanvasPages();
             input.focus();
+            showToast("🧹 已清除內容（舊文字已自動備份至歷史紀錄）");
+        }
+
+        async function handleRewrite() {
+            const rawText = input.value.trim();
+            const apiKey = apiKeyInput.value.trim();
+
+            if (!rawText) return;
+            if (!apiKey) {
+                showToast("請先在設定頁輸入 OpenRouter API Key");
+                openDrawer('settings-drawer');
+                return;
+            }
+
+            rewriteBtn.disabled = true;
+            rewriteBtn.innerHTML = "重寫中...<br><span style='font-size:8px;'>Rewriting</span>";
+
+            const systemPrompt = `
+You are an expert communication assistant.
+${TONE_BASE[currentTone]}
+${CANTONESE_FILTERS[currentFilter]}
+${POINT_FORM_RULES[currentPointForm]}
+Output ONLY the final processed text without introductory commentary.
+            `.trim();
+
+            try {
+                const response = await fetch(WORKER_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ text: rawText, apiKey: apiKey, systemPrompt: systemPrompt })
+                });
+
+                const data = await response.json();
+                if (data.choices && data.choices[0] && data.choices[0].message) {
+                    const rewritten = data.choices[0].message.content.trim();
+                    input.value = rewritten;
+                    addHistoryItem(rewritten);
+                    calculateCanvasPages();
+                } else {
+                    showToast("⚠️ 重寫失敗，已保留原始文字");
+                }
+            } catch (err) {
+                showToast("⚠️ 網路連線錯誤");
+            } finally {
+                rewriteBtn.disabled = false;
+                rewriteBtn.innerHTML = "AI 重寫<br><span style='font-size:8px; opacity:0.8;'>Rewrite</span>";
+            }
+        }
+
+        function showToast(msg) {
+            toastEl.textContent = msg;
+            toastEl.style.display = 'block';
+            setTimeout(() => { toastEl.style.display = 'none'; }, 2800);
         }
 
         function escapeHtml(text) {
