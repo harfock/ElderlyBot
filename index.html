@@ -2,7 +2,7 @@
 <html lang="zh-HK">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>傳譯 - HK Communication & Voice Assistant</title>
 
     <!-- Web App & Apple Home Screen Icon ("傳譯") -->
@@ -23,6 +23,7 @@
             --punc-text-color: #2A1F13;
             --btn-warm-primary: linear-gradient(145deg, #D95338, #B83A20);
             --btn-warm-secondary: linear-gradient(145deg, #E2D1BC, #C8B59E);
+            --btn-warm-success: linear-gradient(145deg, #2E7D32, #1B5E20);
             --border-color: rgba(180, 130, 60, 0.35);
             --chars-per-row: 8;
             --line-height-px: 78px;
@@ -40,6 +41,7 @@
             --punc-text-color: #12263F;
             --btn-warm-primary: linear-gradient(145deg, #2B6CB0, #1C4ED8);
             --btn-warm-secondary: linear-gradient(145deg, #C2D8F2, #A3C3E8);
+            --btn-warm-success: linear-gradient(145deg, #2563EB, #1D4ED8);
             --border-color: rgba(60, 120, 180, 0.35);
         }
 
@@ -55,13 +57,19 @@
             --punc-text-color: #3B1825;
             --btn-warm-primary: linear-gradient(145deg, #C53030, #9B1C1C);
             --btn-warm-secondary: linear-gradient(145deg, #E9C6D1, #D8A9B8);
+            --btn-warm-success: linear-gradient(145deg, #9F1239, #881337);
             --border-color: rgba(200, 100, 130, 0.35);
         }
 
-        * {
+        *, *:before, *:after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
         }
 
         body {
@@ -78,7 +86,7 @@
             display: flex;
             flex-direction: column;
             padding: 15px 15px 15px 90px;
-            overflow: hidden;
+            overflow-y: hidden;
             transition: background-color 0.3s, color 0.3s;
         }
 
@@ -120,6 +128,11 @@
             padding: 8px 12px;
             background: var(--btn-warm-secondary);
             font-size: 13px;
+        }
+
+        .top-btn-save {
+            background: var(--btn-warm-success);
+            color: #FFFFFF;
         }
 
         /* Left Sidebar */
@@ -212,7 +225,8 @@
             top: 0;
             right: 0;
             bottom: 0;
-            width: clamp(260px, 80vw, 300px);
+            width: 280px;
+            max-width: 80%;
             background: var(--card-bg);
             backdrop-filter: blur(16px);
             border-left: 1px solid var(--border-color);
@@ -225,6 +239,7 @@
             transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-y: auto;
             box-shadow: -6px 0 25px rgba(0, 0, 0, 0.18);
+            box-sizing: border-box;
         }
 
         .drawer.open { transform: translateX(0); }
@@ -334,8 +349,8 @@
         .history-card {
             position: relative;
             display: flex;
-            align-items: flex-start;
-            gap: 8px;
+            flex-direction: column;
+            gap: 4px;
             background: rgba(0,0,0,0.04);
             padding: 10px;
             border-radius: 8px;
@@ -343,6 +358,27 @@
             border: 1px solid var(--border-color);
             cursor: pointer;
             user-select: none;
+        }
+
+        .history-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 4px;
+            margin-bottom: 2px;
+        }
+
+        .history-card-time {
+            font-size: 11px;
+            font-weight: bold;
+            opacity: 0.75;
+        }
+
+        .history-card-body {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
         }
 
         .history-card .chk {
@@ -383,7 +419,7 @@
             font-size: 12px;
         }
 
-        /* Main Canvas Workspace with Page Flipping */
+        /* Main Canvas Workspace */
         .main-container {
             display: flex;
             flex-direction: column;
@@ -399,7 +435,7 @@
             padding: 6px 10px;
             border-radius: 8px;
             margin-bottom: 6px;
-            margin-right: 175px;
+            margin-right: 250px;
             line-height: 1.3;
         }
 
@@ -467,6 +503,7 @@
             .punctuation-sidebar { left: 4px; width: 58px; }
             .btn-punc { width: 36px; font-size: 14px; }
             .instruction-banner { margin-right: 0; margin-top: 42px; font-size: 11px; }
+            .drawer { width: 80%; }
         }
     </style>
 </head>
@@ -476,8 +513,9 @@
 
     <!-- Top Action Nav -->
     <div class="top-nav-bar">
-        <button class="btn-3d top-btn" onclick="openDrawer('history-drawer')">📜 歷史 History</button>
-        <button class="btn-3d top-btn" onclick="openDrawer('settings-drawer')">⚙ 設定 Settings</button>
+        <button class="btn-3d top-btn top-btn-save" onclick="handleManualSave()">💾 儲存 Save</button>
+        <button class="btn-3d top-btn" onclick="toggleDrawer('history-drawer')">📜 歷史 History</button>
+        <button class="btn-3d top-btn" onclick="toggleDrawer('settings-drawer')">⚙ 設定 Settings</button>
     </div>
 
     <!-- Left Floating Sidebar -->
@@ -679,7 +717,6 @@
             setupAutosaveListeners();
         });
 
-        // Setup Autosave Event Listeners for Page Close/Unload
         function setupAutosaveListeners() {
             window.addEventListener('beforeunload', () => autoSaveCanvasText());
             window.addEventListener('pagehide', () => autoSaveCanvasText());
@@ -690,7 +727,6 @@
             const currentText = input.value.trim();
             if (!currentText || currentText === "請在此輸入文字...") return;
 
-            // Prevent duplicate save if identical to the latest history entry
             if (historyItems.length > 0 && historyItems[0].text === currentText) {
                 return;
             }
@@ -698,7 +734,20 @@
             addHistoryItem(currentText);
         }
 
-        // Close Drawers & Clear Pasted Badges on Canvas Click
+        function handleManualSave() {
+            const currentText = input.value.trim();
+            if (!currentText || currentText === "請在此輸入文字...") {
+                showToast("⚠️ 沒有文字可儲存");
+                return;
+            }
+            if (historyItems.length > 0 && historyItems[0].text === currentText) {
+                showToast("ℹ️ 此文字已儲存在歷史紀錄中");
+                return;
+            }
+            addHistoryItem(currentText);
+            showToast("💾 已成功儲存至歷史紀錄");
+        }
+
         function handleCanvasAreaClick(e) {
             if (e.target.closest('.top-nav-bar') || e.target.closest('.drawer')) return;
             closeAllDrawers();
@@ -709,14 +758,13 @@
             document.querySelectorAll('.drawer').forEach(d => d.classList.remove('open'));
         }
 
-        function clearPastedBadges() {
-            pastedItemIds.clear();
-            renderHistory();
-        }
-
-        function openDrawer(id) {
+        function toggleDrawer(id) {
+            const targetDrawer = document.getElementById(id);
+            const isOpen = targetDrawer.classList.contains('open');
             closeAllDrawers();
-            document.getElementById(id).classList.add('open');
+            if (!isOpen) {
+                targetDrawer.classList.add('open');
+            }
         }
 
         function toggleLeftSidebar() {
@@ -783,7 +831,17 @@
             localStorage.setItem('saved_theme', themeClass);
         }
 
-        // History Management & Selection Mode
+        function formatDate(timestamp) {
+            const d = new Date(timestamp);
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            const hours = String(d.getHours()).padStart(2, '0');
+            const minutes = String(d.getMinutes()).padStart(2, '0');
+            const seconds = String(d.getSeconds()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
+
         function enterHistorySelection(mode) {
             histSelectionMode = mode;
             document.getElementById('hist-default-tools').style.display = 'none';
@@ -862,9 +920,16 @@
                 card.className = `history-card ${pastedItemIds.has(item.id) ? 'is-pasted' : ''}`;
                 card.onclick = () => handleHistoryCardClick(item.id, item.text);
 
+                const timeFormatted = formatDate(item.id);
+
                 card.innerHTML = `
-                    <input type="checkbox" class="chk" data-id="${item.id}" onclick="event.stopPropagation()">
-                    <span class="history-card-text">${escapeHtml(item.text)}</span>
+                    <div class="history-card-header">
+                        <span class="history-card-time">📅 ${timeFormatted}</span>
+                    </div>
+                    <div class="history-card-body">
+                        <input type="checkbox" class="chk" data-id="${item.id}" onclick="event.stopPropagation()">
+                        <span class="history-card-text">${escapeHtml(item.text)}</span>
+                    </div>
                     <span class="badge-pasted">已貼上 Pasted</span>
                 `;
                 historyListEl.appendChild(card);
@@ -894,7 +959,6 @@
             localStorage.setItem('saved_history_items', JSON.stringify(historyItems));
         }
 
-        // Canvas Pagination & Page Scroll Logic
         input.addEventListener('input', () => {
             handleInitialClear();
             calculateCanvasPages();
@@ -973,7 +1037,6 @@
             }
         }
 
-        // Updated Clear Action: Auto-saves existing content to history first
         function clearText() {
             autoSaveCanvasText();
             isFirstInput = false;
@@ -990,7 +1053,7 @@
             if (!rawText) return;
             if (!apiKey) {
                 showToast("請先在設定頁輸入 OpenRouter API Key");
-                openDrawer('settings-drawer');
+                toggleDrawer('settings-drawer');
                 return;
             }
 
